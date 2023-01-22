@@ -1,0 +1,12 @@
+{
+  "env_config_test": "default",
+  "env_not_included_config_test": "default",
+  "default_config_test": "default",
+  "local_config_test": "default",
+  "environment_config_test": "default",
+  "host": "http://localhost",
+  "port": 42102,
+  "database_url": null,
+  "api_rate_limit_window_minutes": 1,
+  "api_rate_limit": 100
+}

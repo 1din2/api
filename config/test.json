@@ -1,0 +1,6 @@
+{
+  "env_config_test": "test",
+  "environment_config_test": "test",
+  "currency_code": "EUR",
+  "supported_currency_codes": ["RON", "EUR"]
+}

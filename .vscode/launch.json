@@ -1,0 +1,23 @@
+{
+  // Use IntelliSense (ctrl + space) to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+  // Based on the following recipe:
+  // https://github.com/Microsoft/vscode-recipes/tree/master/Docker-TypeScript
+
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Docker: Attach to Node",
+      "type": "node",
+      "request": "attach",
+      "remoteRoot": "/usr/src/app",
+      "port": 9222,
+      "restart": true,
+
+      // Uncomnent this line if your Docker is running on localhost (0.0.0.0)
+      "address": "0.0.0.0"
+    }
+  ]
+}

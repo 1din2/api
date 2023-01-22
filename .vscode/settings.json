@@ -1,0 +1,23 @@
+{
+  "prettier.arrowParens": "avoid",
+  "prettier.trailingComma": "es5",
+  "editor.insertSpaces": false,
+  "files.trimTrailingWhitespace": true,
+  "files.exclude": {
+    ".git": true,
+    ".build": true,
+    "**/.DS_Store": true
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "dist/**": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "npm.packageManager": "yarn",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "git.ignoreLimitWarning": true,
+  "files.insertFinalNewline": true,
+  "typescript.tsc.autoDetect": "off"
+}

@@ -1,0 +1,4 @@
+dist/**/*.js
+src/tests/jest.d.ts
+src/tests/generated-api-client
+src/typings
