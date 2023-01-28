@@ -5,15 +5,18 @@ import { TypeBaseEntity } from "../../base/types/types";
 registerEnumType(UserRole, { name: "UserRole" });
 
 @ObjectType("User")
-export class TypeUser extends TypeBaseEntity implements Omit<UserData, "uid"> {
+export class TypeUser
+  extends TypeBaseEntity
+  implements Omit<UserData, "identityId">
+{
   @Field()
-  name!: string;
+  displayName!: string;
 
   @Field({ nullable: true })
-  firstName?: string;
+  givenName?: string;
 
   @Field({ nullable: true })
-  lastName?: string;
+  familyName?: string;
 
   @Field(() => UserRole)
   role!: UserRole;

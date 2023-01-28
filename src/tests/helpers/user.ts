@@ -6,13 +6,13 @@ import {
 } from "../../domain/user/entity/user";
 import { ApiContext } from "../../container/api-context";
 import { EntityId } from "../../domain/base/entity";
-import { generateUniqueId } from "../../domain/base/util";
 
 export const createUserData = (
+  identityId: number,
   args?: Partial<UserCreateData>
 ): UserCreateData => ({
-  uid: generateUniqueId(),
-  name: faker.name.findName(),
+  identityId,
+  displayName: faker.name.findName(),
   role: UserRole.USER,
   ...args,
 });
