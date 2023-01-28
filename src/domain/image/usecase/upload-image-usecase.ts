@@ -67,7 +67,7 @@ export class UploadImageUsecase extends AuthUseCase<
   static override readonly jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {
-      mimetype: { type: "string", pattern: "^image/(jpeg|png)$" },
+      mimetype: { type: "string", pattern: "^image/(jpeg|png|webp)$" },
       filename: { type: "string", minLength: 1 },
       encoding: { type: "string" },
       stream: { type: "object" },

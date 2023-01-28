@@ -8,7 +8,6 @@ import { RequiredJSONSchema } from "../../base/json-schema";
 import { userJsonSchema } from "../../user/entity/user";
 
 export enum ImageProvider {
-  CONTENT = "CONTENT",
   S3 = "S3",
 }
 
@@ -34,7 +33,7 @@ export const jsonSchema: RequiredJSONSchema = {
     ...BaseEntity.jsonSchema.properties,
     contentType: {
       type: "string",
-      pattern: "^image/(jpeg|png|webp|svg+xml)$",
+      pattern: "^image/(jpeg|png|webp)$",
     },
     hash: { type: "string", minLength: 8, maxLength: 40 },
     provider: { type: "string", enum: Object.values(ImageProvider) },

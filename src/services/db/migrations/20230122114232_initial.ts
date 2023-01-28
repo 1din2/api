@@ -34,9 +34,50 @@ export async function up(knex: Knex): Promise<void> {
 
     table.unique(["provider", "providerId"]);
   });
+
+  await knex.schema.createTable("Image", (table) => {
+    table.increments("id").notNullable().primary();
+    table.enu("provider", ["S3"]).notNullable();
+    table.enu("type", ["SELECT"]).notNullable();
+    table.string("contentType").notNullable();
+    table.string("hash").notNullable();
+    table.string("color");
+    table.string("originalName");
+    table.integer("length");
+    table.integer("height").notNullable();
+    table.integer("width").notNullable();
+    table.string("content");
+    table.string("url");
+    table.integer("userId").index().references("User.id");
+    table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
+    table.dateTime("updatedAt");
+
+    table.unique(["hash", "height", "width"]);
+  });
+
+  await knex.schema.createTable("Poll", (table) => {
+    table.increments("id").notNullable().primary();
+    table.enu("status", ["DRAFT", "ACTIVE", "INACTIVE", "ENDED"]).notNullable();
+    table.enu("type", ["SELECT"]).notNullable();
+    table.string("title").notNullable();
+    table.string("description");
+    table.string("language", 2).notNullable();
+    table.string("country", 2).notNullable();
+    table.integer("minSelect").notNullable();
+    table.integer("maxSelect").notNullable();
+    table.dateTime("endsAt").notNullable().index();
+    table.integer("userId").notNullable().references("User.id");
+    table.integer("imageId").references("Image.id").onDelete("SET NULL");
+    table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
+    table.dateTime("updatedAt");
+
+    table.index(["country", "language"]);
+  });
 }
 
 export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTable("User");
   await knex.schema.dropTable("Identity");
+  await knex.schema.dropTable("Image");
+  await knex.schema.dropTable("Poll");
 }

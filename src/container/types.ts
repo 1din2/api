@@ -1,5 +1,7 @@
 import { Logger } from "../domain/base/logger";
 import { DomainContext } from "../domain/base/usecase";
+import { ImageService } from "../domain/image/service/image-service";
+import { PollService } from "../domain/poll/service/poll-service";
 import { IdentityService } from "../domain/user/service/identity-service";
 import { UserService } from "../domain/user/service/user-service";
 
@@ -7,6 +9,8 @@ export type ApiServicesInput = {
   logger?: Logger;
   user?: UserService;
   identity?: IdentityService;
+  image?: ImageService;
+  poll?: PollService;
 };
 
 export type ApiUserData = Pick<DomainContext, "language" | "isAuthenticated">;

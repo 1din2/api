@@ -1,12 +1,12 @@
 import { EntityId } from "../../domain/base/entity";
-import { ImageData } from "../../domain/image/entity/image";
+import { ImageCreateData, ImageData } from "../../domain/image/entity/image";
 import {
   ImageHashUniqueKey,
   ImageService,
 } from "../../domain/image/service/image-service";
 import { DbRepository } from "../db/repository";
 
-export class ImageDbRepository
+export class ImageDbService
   extends DbRepository<ImageData>
   implements ImageService
 {
@@ -27,5 +27,12 @@ export class ImageDbRepository
   }: ImageHashUniqueKey): Promise<ImageData | null> {
     const item = await this.query.where({ hash, height, width }).first();
     return item || null;
+  }
+
+  override async findUnique(data: ImageCreateData): Promise<ImageData | null> {
+    const item = await this.findUniqueByHash(data);
+    if (item) return item;
+
+    return super.findUnique(data);
   }
 }

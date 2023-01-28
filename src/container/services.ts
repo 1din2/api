@@ -6,11 +6,17 @@ import { UserService } from "../domain/user/service/user-service";
 import { UserDbService } from "../services/user/user-service";
 import { IdentityService } from "../domain/user/service/identity-service";
 import { IdentityDbService } from "../services/user/identity-service";
+import { ImageService } from "../domain/image/service/image-service";
+import { ImageDbService } from "../services/image/image-service";
+import { PollService } from "../domain/poll/service/poll-service";
+import { PollDbService } from "../services/poll/poll-service";
 
 export interface ApiServices {
   logger: Logger;
   user: UserService;
   identity: IdentityService;
+  image: ImageService;
+  poll: PollService;
 }
 
 let instance: ApiServices;
@@ -22,11 +28,15 @@ const createServices = (
   const logger = input?.logger ?? ConsoleLogger.Instance;
   const user = input?.user ?? new UserDbService();
   const identity = input?.identity ?? new IdentityDbService();
+  const image = input?.image ?? new ImageDbService();
+  const poll = input?.poll ?? new PollDbService();
 
   const services: ApiServices = {
     logger,
     user,
     identity,
+    image,
+    poll,
   };
 
   return services;
