@@ -12,6 +12,7 @@ export async function up(knex: Knex): Promise<void> {
       .references("Identity.id");
 
     table.string("displayName").notNullable();
+    table.string("uid").notNullable().unique();
     table.string("familyName");
     table.string("givenName");
     table.enu("role", ["USER", "ADMIN"]).notNullable();

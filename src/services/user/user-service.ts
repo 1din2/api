@@ -22,13 +22,21 @@ export class UserDbService
     });
   }
 
+  async findByUid(uid: string): Promise<UserData | null> {
+    const model = await this.query.where({ uid }).first();
+    return model || null;
+  }
+
   async findByIdentityId(identityId: EntityId): Promise<UserData | null> {
     const model = await this.query.where({ identityId }).first();
     return model || null;
   }
 
   override async findUnique(data: UserCreateData): Promise<UserData | null> {
-    const user = await this.findByIdentityId(data.identityId);
+    let user = await this.findByIdentityId(data.identityId);
+    if (user) return user;
+
+    user = await this.findByUid(data.uid);
     if (user) return user;
 
     return super.findUnique(data);

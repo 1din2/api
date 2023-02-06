@@ -19,6 +19,7 @@ export enum Gender {
 export interface UserData extends EntityData {
   role: UserRole;
   displayName: string;
+  uid: string;
   givenName?: string;
   familyName?: string;
   identityId: EntityId;
@@ -33,6 +34,7 @@ export const userJsonSchema: RequiredJSONSchema = {
     ...BaseEntity.jsonSchema.properties,
     role: { type: "string", enum: Object.values(UserRole) },
     displayName: { type: "string", minLength: 1, maxLength: 50 },
+    uid: { type: "string", minLength: 4, maxLength: 10 },
     givenName: { type: ["string", "null"], minLength: 1, maxLength: 50 },
     familyName: { type: ["string", "null"], minLength: 1, maxLength: 50 },
     identityId: BaseEntity.jsonSchema.properties.id,
@@ -42,5 +44,6 @@ export const userJsonSchema: RequiredJSONSchema = {
     "role",
     "displayName",
     "identityId",
+    "uid",
   ]),
 };
