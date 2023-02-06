@@ -61,6 +61,7 @@ export async function up(knex: Knex): Promise<void> {
     table.enu("status", ["DRAFT", "ACTIVE", "INACTIVE", "ENDED"]).notNullable();
     table.enu("type", ["SELECT"]).notNullable();
     table.string("title").notNullable();
+    table.string("slug").notNullable();
     table.string("description");
     table.string("language", 2).notNullable();
     table.string("country", 2).notNullable();
@@ -73,6 +74,18 @@ export async function up(knex: Knex): Promise<void> {
     table.dateTime("updatedAt");
 
     table.index(["country", "language"]);
+    table.index(["country", "language", "status", "createdAt"]);
+  });
+
+  await knex.schema.createTable("PollOption", (table) => {
+    table.increments("id").notNullable().primary();
+    table.string("title").notNullable();
+    table.string("description");
+    table.integer("priority").notNullable();
+    table.integer("pollId").notNullable().references("Poll.id").index();
+    table.integer("imageId").references("Image.id").onDelete("SET NULL");
+    table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
+    table.dateTime("updatedAt");
   });
 }
 

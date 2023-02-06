@@ -10,6 +10,8 @@ import { ImageService } from "../domain/image/service/image-service";
 import { ImageDbService } from "../services/image/image-service";
 import { PollService } from "../domain/poll/service/poll-service";
 import { PollDbService } from "../services/poll/poll-service";
+import { PollOptionService } from "../domain/poll/service/poll-option-service";
+import { PollOptionDbService } from "../services/poll/poll-option-service";
 
 export interface ApiServices {
   logger: Logger;
@@ -17,6 +19,7 @@ export interface ApiServices {
   identity: IdentityService;
   image: ImageService;
   poll: PollService;
+  pollOption: PollOptionService;
 }
 
 let instance: ApiServices;
@@ -30,6 +33,7 @@ const createServices = (
   const identity = input?.identity ?? new IdentityDbService();
   const image = input?.image ?? new ImageDbService();
   const poll = input?.poll ?? new PollDbService();
+  const pollOption = input?.pollOption ?? new PollOptionDbService();
 
   const services: ApiServices = {
     logger,
@@ -37,6 +41,7 @@ const createServices = (
     identity,
     image,
     poll,
+    pollOption,
   };
 
   return services;

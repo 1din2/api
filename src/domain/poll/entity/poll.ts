@@ -22,6 +22,7 @@ export interface PollData extends EntityData {
   userId: EntityId;
   status: PollStatus;
   title: string;
+  slug: string;
   description?: string;
   imageId?: EntityId;
   minSelect: number;
@@ -41,6 +42,7 @@ export const pollJsonSchema: RequiredJSONSchema = {
     userId: BaseEntity.jsonSchema.properties.id,
     status: { type: "string", enum: Object.values(PollStatus) },
     title: { type: "string", minLength: 10, maxLength: 200 },
+    slug: { type: "string", minLength: 10, maxLength: 100 },
     description: { type: ["null", "string"], minLength: 50, maxLength: 250 },
     imageId: { oneOf: [{ type: "null" }, BaseEntity.jsonSchema.properties.id] },
     minSelect: { type: "integer", minimum: 1, maximum: 10 },
@@ -57,6 +59,7 @@ export const pollJsonSchema: RequiredJSONSchema = {
   required: BaseEntity.jsonSchema.required.concat([
     "userId",
     "title",
+    "slug",
     "status",
     "minSelect",
     "maxSelect",
