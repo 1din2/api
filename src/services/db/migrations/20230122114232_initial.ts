@@ -87,6 +87,17 @@ export async function up(knex: Knex): Promise<void> {
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt");
   });
+
+  await knex.schema.createTable("PollOptionVote", (table) => {
+    table.increments("id").notNullable().primary();
+    table.integer("userId").notNullable().references("User.id");
+    table.integer("pollId").notNullable().references("Poll.id").index();
+    table.integer("pollOptionId").notNullable().references("PollOption.id");
+    table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
+    table.dateTime("updatedAt");
+
+    table.unique(["userId", "pollOptionId"]);
+  });
 }
 
 export async function down(knex: Knex): Promise<void> {
@@ -94,4 +105,6 @@ export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTable("Identity");
   await knex.schema.dropTable("Image");
   await knex.schema.dropTable("Poll");
+  await knex.schema.dropTable("PollOption");
+  await knex.schema.dropTable("PollOptionVote");
 }

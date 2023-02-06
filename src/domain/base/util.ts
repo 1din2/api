@@ -15,6 +15,13 @@ export function generateUniqueId() {
   return ulid().toLowerCase();
 }
 
+/**
+ * Generate an uniq short id.
+ */
+export function generateShortUniqueId() {
+  return ulid().toLowerCase().substring(6);
+}
+
 export const isNumber = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value);
 
