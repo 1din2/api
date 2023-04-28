@@ -3,6 +3,7 @@ import {
   EntityCreateData,
   EntityData,
   EntityId,
+  EntityUpdateData,
 } from "../../base/entity";
 import { RequiredJSONSchema } from "../../base/json-schema";
 import { dateAddDays } from "../../base/util";
@@ -34,38 +35,43 @@ export interface PollData extends EntityData {
 }
 
 export type PollCreateData = EntityCreateData<PollData>;
+export type PollUpdateData = EntityUpdateData<PollData>;
 
-export const pollJsonSchema: RequiredJSONSchema = {
-  type: "object",
-  properties: {
-    ...BaseEntity.jsonSchema.properties,
-    userId: BaseEntity.jsonSchema.properties.id,
-    status: { type: "string", enum: Object.values(PollStatus) },
-    title: { type: "string", minLength: 10, maxLength: 200 },
-    slug: { type: "string", minLength: 10, maxLength: 100 },
-    description: { type: ["null", "string"], minLength: 50, maxLength: 250 },
-    imageId: { oneOf: [{ type: "null" }, BaseEntity.jsonSchema.properties.id] },
-    minSelect: { type: "integer", minimum: 1, maximum: 10 },
-    maxSelect: { type: "integer", minimum: 1, maximum: 10 },
-    language: { type: "string", pattern: "^[a-z]{2}$" },
-    country: { type: "string", pattern: "^[a-z]{2}$" },
-    type: { type: "string", enum: Object.values(PollType) },
-    endsAt: {
-      type: "integer",
-      minimum: new Date().getTime(),
-      maximum: dateAddDays(100).getTime(),
+export class Poll extends BaseEntity<PollData> {
+  static override jsonSchema: RequiredJSONSchema = {
+    type: "object",
+    properties: {
+      ...BaseEntity.jsonSchema.properties,
+      userId: BaseEntity.jsonSchema.properties.id,
+      status: { type: "string", enum: Object.values(PollStatus) },
+      title: { type: "string", minLength: 10, maxLength: 200 },
+      slug: { type: "string", minLength: 10, maxLength: 100 },
+      description: { type: ["null", "string"], minLength: 50, maxLength: 250 },
+      imageId: {
+        oneOf: [{ type: "null" }, BaseEntity.jsonSchema.properties.id],
+      },
+      minSelect: { type: "integer", minimum: 1, maximum: 10 },
+      maxSelect: { type: "integer", minimum: 1, maximum: 10 },
+      language: { type: "string", pattern: "^[a-z]{2}$" },
+      country: { type: "string", pattern: "^[a-z]{2}$" },
+      type: { type: "string", enum: Object.values(PollType) },
+      endsAt: {
+        type: "integer",
+        minimum: new Date().getTime(),
+        maximum: dateAddDays(100).getTime(),
+      },
     },
-  },
-  required: BaseEntity.jsonSchema.required.concat([
-    "userId",
-    "title",
-    "slug",
-    "status",
-    "minSelect",
-    "maxSelect",
-    "language",
-    "country",
-    "type",
-    "endsAt",
-  ]),
-};
+    required: BaseEntity.jsonSchema.required.concat([
+      "userId",
+      "title",
+      "slug",
+      "status",
+      "minSelect",
+      "maxSelect",
+      "language",
+      "country",
+      "type",
+      "endsAt",
+    ]),
+  };
+}

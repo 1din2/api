@@ -18,7 +18,7 @@ export interface RepositoryEvents<TData extends EntityData> {
 export interface Repository<
   TData extends EntityData = EntityData,
   TCreate extends EntityCreateData<TData> = EntityCreateData<TData>,
-  TUpdate = EntityUpdateData<TData>,
+  TUpdate extends EntityUpdateData<TData> = EntityUpdateData<TData>,
   TEvents extends RepositoryEvents<TData> = RepositoryEvents<TData>
 > extends IEmitter<TEvents> {
   /**

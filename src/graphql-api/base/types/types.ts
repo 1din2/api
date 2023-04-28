@@ -27,7 +27,7 @@ export class TypeBaseEntity implements EntityData {
   createdAt!: number;
 
   @Field({ nullable: true })
-  updatedAt?: number;
+  updatedAt!: number;
 }
 
 @ObjectType("PageInfo")

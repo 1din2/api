@@ -1,5 +1,6 @@
 import faker from "faker";
 import {
+  User,
   UserCreateData,
   UserData,
   UserRole,
@@ -9,10 +10,9 @@ import { EntityId } from "../../domain/base/entity";
 import { generateShortUniqueId } from "../../domain/base/util";
 
 export const createUserData = (
-  identityId: number,
   args?: Partial<UserCreateData>
 ): UserCreateData => ({
-  identityId,
+  id: User.createId(),
   uid: generateShortUniqueId(),
   displayName: faker.name.findName(),
   role: UserRole.USER,
@@ -23,7 +23,7 @@ export const deleteUser = async (
   userOrId: EntityId | UserData,
   context: ApiContext
 ) => {
-  const userId = typeof userOrId === "number" ? userOrId : userOrId.id;
+  const userId = typeof userOrId === "string" ? userOrId : userOrId.id;
 
   await context.services.user.deleteById(userId);
 };

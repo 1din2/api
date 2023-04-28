@@ -1,7 +1,8 @@
+import { EntityId } from "../../domain/base/entity";
 import { JsonValidator } from "../../domain/base/validator";
 import {
+  PollOption,
   PollOptionData,
-  pollOptionJsonSchema,
 } from "../../domain/poll/entity/poll-option";
 import { PollOptionService } from "../../domain/poll/service/poll-option-service";
 import { DbRepository } from "../db/repository";
@@ -12,15 +13,15 @@ export class PollOptionDbService
 {
   constructor() {
     super("PollOption", {
-      createValidator: new JsonValidator(pollOptionJsonSchema),
+      createValidator: new JsonValidator(PollOption.jsonSchema),
       updateValidator: new JsonValidator({
-        ...pollOptionJsonSchema,
+        ...PollOption.jsonSchema,
         required: ["id"],
       }),
     });
   }
 
-  getByPollId(pollId: number): Promise<PollOptionData[]> {
+  getByPollId(pollId: EntityId): Promise<PollOptionData[]> {
     return this.query.where({ pollId }).orderBy("priority");
   }
 }

@@ -4,24 +4,20 @@ export async function up(knex: Knex): Promise<void> {
   await knex.raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
 
   await knex.schema.createTable("User", (table) => {
-    table.increments("id").notNullable().primary();
-    table
-      .integer("identityId")
-      .notNullable()
-      .unique()
-      .references("Identity.id");
-
+    table.string("id").notNullable().primary();
     table.string("displayName").notNullable();
     table.string("uid").notNullable().unique();
+    table.string("email");
+    table.string("gender");
     table.string("familyName");
     table.string("givenName");
     table.enu("role", ["USER", "ADMIN"]).notNullable();
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
-    table.dateTime("updatedAt");
+    table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
   });
 
   await knex.schema.createTable("Identity", (table) => {
-    table.increments("id").notNullable().primary();
+    table.string("id").notNullable().primary();
     table.enu("provider", ["FACEBOOK", "GOOGLE"]).notNullable();
     table.string("providerId").notNullable();
     table.string("displayName").notNullable();
@@ -31,13 +27,15 @@ export async function up(knex: Knex): Promise<void> {
     table.specificType("photos", "varchar[]");
     table.jsonb("profile");
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
-    table.dateTime("updatedAt");
+    table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
+
+    table.string("userId").notNullable().references("User.id");
 
     table.unique(["provider", "providerId"]);
   });
 
   await knex.schema.createTable("Image", (table) => {
-    table.increments("id").notNullable().primary();
+    table.string("id").notNullable().primary();
     table.enu("provider", ["S3"]).notNullable();
     table.enu("type", ["SELECT"]).notNullable();
     table.string("contentType").notNullable();
@@ -49,15 +47,15 @@ export async function up(knex: Knex): Promise<void> {
     table.integer("width").notNullable();
     table.string("content");
     table.string("url");
-    table.integer("userId").index().references("User.id");
+    table.string("userId").index().references("User.id");
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
-    table.dateTime("updatedAt");
+    table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
 
     table.unique(["hash", "height", "width"]);
   });
 
   await knex.schema.createTable("Poll", (table) => {
-    table.increments("id").notNullable().primary();
+    table.string("id").notNullable().primary();
     table.enu("status", ["DRAFT", "ACTIVE", "INACTIVE", "ENDED"]).notNullable();
     table.enu("type", ["SELECT"]).notNullable();
     table.string("title").notNullable();
@@ -68,33 +66,33 @@ export async function up(knex: Knex): Promise<void> {
     table.integer("minSelect").notNullable();
     table.integer("maxSelect").notNullable();
     table.dateTime("endsAt").notNullable().index();
-    table.integer("userId").notNullable().references("User.id");
-    table.integer("imageId").references("Image.id").onDelete("SET NULL");
+    table.string("userId").notNullable().references("User.id");
+    table.string("imageId").references("Image.id").onDelete("SET NULL");
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
-    table.dateTime("updatedAt");
+    table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
 
     table.index(["country", "language"]);
     table.index(["country", "language", "status", "createdAt"]);
   });
 
   await knex.schema.createTable("PollOption", (table) => {
-    table.increments("id").notNullable().primary();
+    table.string("id").notNullable().primary();
     table.string("title").notNullable();
     table.string("description");
     table.integer("priority").notNullable();
-    table.integer("pollId").notNullable().references("Poll.id").index();
-    table.integer("imageId").references("Image.id").onDelete("SET NULL");
+    table.string("pollId").notNullable().references("Poll.id").index();
+    table.string("imageId").references("Image.id").onDelete("SET NULL");
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
-    table.dateTime("updatedAt");
+    table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
   });
 
   await knex.schema.createTable("PollOptionVote", (table) => {
-    table.increments("id").notNullable().primary();
-    table.integer("userId").notNullable().references("User.id");
-    table.integer("pollId").notNullable().references("Poll.id").index();
-    table.integer("pollOptionId").notNullable().references("PollOption.id");
+    table.string("id").notNullable().primary();
+    table.string("userId").notNullable().references("User.id").index();
+    table.string("pollId").notNullable().references("Poll.id").index();
+    table.string("pollOptionId").notNullable().references("PollOption.id");
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
-    table.dateTime("updatedAt");
+    table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
 
     table.unique(["userId", "pollOptionId"]);
   });

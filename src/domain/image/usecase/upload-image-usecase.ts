@@ -6,7 +6,7 @@ import {
   AuthDomainContext,
   AuthUseCase,
 } from "../../user/usecase/auth-usercase";
-import { ImageData } from "../entity/image";
+import { Image, ImageData } from "../entity/image";
 import { ImageService } from "../service/image-service";
 import { ImageMetadataService } from "../service/image-metadata-service";
 import { ImageStorage } from "../service/image-storage";
@@ -41,7 +41,7 @@ export class UploadImageUsecase extends AuthUseCase<
       logger.info(`Found image duplication`, info);
       return exists;
     }
-    const id = info.hash;
+    const id = Image.createId();
     const { url, provider } = await this.imageStorage.save({
       streamBuffer: buffer,
       id,
@@ -55,6 +55,7 @@ export class UploadImageUsecase extends AuthUseCase<
     }
 
     return this.imageRep.create({
+      id,
       ...info,
       contentType,
       originalName,

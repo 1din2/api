@@ -3,6 +3,7 @@ import {
   EntityCreateData,
   EntityData,
   EntityId,
+  EntityUpdateData,
 } from "../../base/entity";
 import { RequiredJSONSchema } from "../../base/json-schema";
 
@@ -15,20 +16,25 @@ export interface PollOptionData extends EntityData {
 }
 
 export type PollOptionCreateData = EntityCreateData<PollOptionData>;
+export type PollOptionUpdateData = EntityUpdateData<PollOptionData>;
 
-export const pollOptionJsonSchema: RequiredJSONSchema = {
-  type: "object",
-  properties: {
-    ...BaseEntity.jsonSchema.properties,
-    pollId: BaseEntity.jsonSchema.properties.id,
-    title: { type: "string", minLength: 1, maxLength: 100 },
-    priority: { type: "integer", minimum: 0, maximum: 100 },
-    description: { type: ["null", "string"], minLength: 10, maxLength: 200 },
-    imageId: { oneOf: [{ type: "null" }, BaseEntity.jsonSchema.properties.id] },
-  },
-  required: BaseEntity.jsonSchema.required.concat([
-    "pollId",
-    "title",
-    "priority",
-  ]),
-};
+export class PollOption extends BaseEntity<PollOptionData> {
+  static override jsonSchema: RequiredJSONSchema = {
+    type: "object",
+    properties: {
+      ...BaseEntity.jsonSchema.properties,
+      pollId: BaseEntity.jsonSchema.properties.id,
+      title: { type: "string", minLength: 1, maxLength: 100 },
+      priority: { type: "integer", minimum: 0, maximum: 100 },
+      description: { type: ["null", "string"], minLength: 10, maxLength: 200 },
+      imageId: {
+        oneOf: [{ type: "null" }, BaseEntity.jsonSchema.properties.id],
+      },
+    },
+    required: BaseEntity.jsonSchema.required.concat([
+      "pollId",
+      "title",
+      "priority",
+    ]),
+  };
+}

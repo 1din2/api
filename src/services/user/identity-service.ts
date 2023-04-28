@@ -1,9 +1,9 @@
 import { JsonValidator } from "../../domain/base/validator";
 import {
+  Identity,
   IdentityCreateData,
   IdentityData,
   IdentityProvider,
-  identityJsonSchema,
 } from "../../domain/user/entity/identity";
 import { IdentityService } from "../../domain/user/service/identity-service";
 import { DbRepository } from "../db/repository";
@@ -14,12 +14,17 @@ export class IdentityDbService
 {
   constructor() {
     super("Identity", {
-      createValidator: new JsonValidator(identityJsonSchema),
+      createValidator: new JsonValidator(Identity.jsonSchema),
       updateValidator: new JsonValidator({
-        ...identityJsonSchema,
+        ...Identity.jsonSchema,
         required: ["id"],
       }),
     });
+  }
+
+  async findByUserId(userId: string): Promise<IdentityData[]> {
+    const models = await this.query.where({ userId });
+    return models;
   }
 
   async findByProviderId(

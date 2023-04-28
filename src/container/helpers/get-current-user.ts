@@ -4,7 +4,6 @@ import { EntityId } from "../../domain/base/entity";
 import logger from "../../domain/logger";
 import { UserService } from "../../domain/user/service/user-service";
 import configuration from "../configuration";
-import { isPositiveNumber } from "../../domain/base/util";
 
 export const getAuthToken = (req: Request): string | null => {
   const token = req.headers.authorization;
@@ -17,8 +16,7 @@ const getUserIdFromToken = (token: string): EntityId | null => {
     sub: string;
   };
   if (payload && payload.sub) {
-    const id = parseInt(payload.sub, 10);
-    return isPositiveNumber(id) ? id : null;
+    return payload.sub;
   }
 
   return null;

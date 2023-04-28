@@ -1,5 +1,5 @@
 import { JsonValidator } from "../../domain/base/validator";
-import { PollData, pollJsonSchema } from "../../domain/poll/entity/poll";
+import { Poll, PollData } from "../../domain/poll/entity/poll";
 import { PollService } from "../../domain/poll/service/poll-service";
 import { DbRepository } from "../db/repository";
 
@@ -9,9 +9,9 @@ export class PollDbService
 {
   constructor() {
     super("Poll", {
-      createValidator: new JsonValidator(pollJsonSchema),
+      createValidator: new JsonValidator(Poll.jsonSchema),
       updateValidator: new JsonValidator({
-        ...pollJsonSchema,
+        ...Poll.jsonSchema,
         required: ["id"],
       }),
     });

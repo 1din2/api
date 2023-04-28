@@ -1,5 +1,6 @@
 import { EntityId } from "../../domain/base/entity";
-import { ImageCreateData, ImageData } from "../../domain/image/entity/image";
+import { JsonValidator } from "../../domain/base/validator";
+import { Image, ImageCreateData, ImageData } from "../../domain/image/entity/image";
 import {
   ImageHashUniqueKey,
   ImageService,
@@ -11,7 +12,13 @@ export class ImageDbService
   implements ImageService
 {
   constructor() {
-    super("Image", {});
+    super("Image", {
+      createValidator: new JsonValidator(Image.jsonSchema),
+      updateValidator: new JsonValidator({
+        ...Image.jsonSchema,
+        required: ["id"],
+      }),
+    });
   }
 
   async deleteByUserId(userId: EntityId): Promise<number> {

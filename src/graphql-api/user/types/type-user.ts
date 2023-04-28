@@ -7,7 +7,7 @@ registerEnumType(UserRole, { name: "UserRole" });
 @ObjectType("User")
 export class TypeUser
   extends TypeBaseEntity
-  implements Omit<UserData, "identityId" | "uid">
+  implements Omit<UserData, "uid">
 {
   @Field()
   displayName!: string;

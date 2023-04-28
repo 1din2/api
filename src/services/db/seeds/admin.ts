@@ -17,7 +17,7 @@ export async function seed() {
   );
 
   const user = identity
-    ? await context.services.user.findByIdentityId(identity.id)
+    ? await context.services.user.findById(identity.userId)
     : null;
 
   if (!user) {
@@ -29,5 +29,5 @@ export async function seed() {
 
   await context.services.user.update({ id: user.id, role: UserRole.ADMIN });
 
-  console.log(`Now ${user.identityId} is ADMIN!`);
+  console.log(`Now ${user.id} is ADMIN!`);
 }

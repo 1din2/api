@@ -1,7 +1,7 @@
 import { JsonValidator } from "../../domain/base/validator";
 import {
+  PollOptionVote,
   PollOptionVoteData,
-  pollOptionVoteJsonSchema,
 } from "../../domain/poll/entity/poll-option-vote";
 import {
   CountPollOptionVoteParams,
@@ -15,9 +15,9 @@ export class PollOptionVoteDbService
 {
   constructor() {
     super("PollOptionVote", {
-      createValidator: new JsonValidator(pollOptionVoteJsonSchema),
+      createValidator: new JsonValidator(PollOptionVote.jsonSchema),
       updateValidator: new JsonValidator({
-        ...pollOptionVoteJsonSchema,
+        ...PollOptionVote.jsonSchema,
         required: ["id"],
       }),
     });
@@ -27,9 +27,9 @@ export class PollOptionVoteDbService
     pollId,
     pollOptionId,
   }: CountPollOptionVoteParams): Promise<number> {
-    const query = this.query.distinct("userId").as("total").where({ pollId });
+    const query = this.query.count("userId").as("total").where({ pollId });
     if (pollOptionId) query.where({ pollOptionId });
     const item = await query.first();
-    return item ? item.total : 0;
+    return item ? parseInt(item.total.toString(), 10) : 0;
   }
 }

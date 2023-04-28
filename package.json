@@ -48,7 +48,6 @@
     "generate-api-client": "generate-graphql-client --post -o ./src/tests/generated-api-client -e http://localhost:42201/graphql"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.6.0",
     "@types/json-schema": "^7.0.9",
     "ajv": "^8.10.0",
     "ajv-formats": "^2.1.1",

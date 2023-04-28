@@ -5,7 +5,7 @@ import { generateUniqueId } from "./util";
 /**
  * Entity id type.
  */
-export type EntityId = number;
+export type EntityId = string;
 
 /**
  * Root entity data.
@@ -13,12 +13,12 @@ export type EntityId = number;
 export interface EntityData {
   id: EntityId;
   createdAt: number;
-  updatedAt?: number | null;
+  updatedAt: number;
 }
 
 export type EntityCreateData<T extends EntityData> = Omit<
   T,
-  "createdAt" | "updatedAt" | "id"
+  "createdAt" | "updatedAt"
 >;
 
 export type EntityUpdateData<T extends EntityData> = Partial<
@@ -55,8 +55,8 @@ export class BaseEntity<TData extends EntityData = EntityData>
   protected readonly _data: TData;
 
   public constructor(data: TData) {
-    this._data = {} as never;
-    this.setData(data);
+    this._data = { ...data };
+    // this.setData(data);
   }
 
   public get id() {
@@ -91,7 +91,6 @@ export class BaseEntity<TData extends EntityData = EntityData>
   }
 
   public set<TProp extends keyof TData>(prop: TProp, value: TData[TProp]) {
-    value = this.formatFieldValue(prop, value);
     if (value === undefined) {
       delete this._data[prop];
     } else {
@@ -104,27 +103,6 @@ export class BaseEntity<TData extends EntityData = EntityData>
     return this._data[prop];
   }
 
-  protected formatFieldValue<TProp extends keyof TData>(
-    prop: TProp,
-    value: TData[TProp]
-  ): TData[TProp] {
-    if (
-      (typeof value === "string" || typeof value === "number") &&
-      this.isDateField(prop as string)
-    )
-      return new Date(value) as never;
-
-    return value;
-  }
-
-  protected isDateField(name: string) {
-    return this.getDateFields().includes(name);
-  }
-
-  protected getDateFields() {
-    return ["createdAt", "updatedAt"];
-  }
-
   public static createId(_input?: unknown) {
     return generateUniqueId();
   }
@@ -132,11 +110,19 @@ export class BaseEntity<TData extends EntityData = EntityData>
   public static readonly jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {
-      id: { type: "integer", minimum: 1, maximum: Number.MAX_SAFE_INTEGER },
-      createdAt: { type: "integer" },
-      updatedAt: { type: "integer" },
+      id: { type: "string", pattern: "^[a-z0-9]{26}$" },
+      createdAt: {
+        type: "integer",
+        minimum: new Date(2023, 0, 1).getTime(),
+        maximum: new Date(new Date().getFullYear() + 1, 0, 1).getTime(),
+      },
+      updatedAt: {
+        type: "integer",
+        minimum: new Date(2023, 0, 1).getTime(),
+        maximum: new Date(new Date().getFullYear() + 1, 0, 1).getTime(),
+      },
     },
-    required: [],
+    required: ["id"],
   };
 
   toJson(): Record<keyof TData, unknown> {
