@@ -16,7 +16,7 @@ export async function up(knex: Knex): Promise<void> {
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
   });
 
-  await knex.schema.createTable("Identity", (table) => {
+  await knex.schema.createTable("Account", (table) => {
     table.string("id").notNullable().primary();
     table.enu("provider", ["FACEBOOK", "GOOGLE"]).notNullable();
     table.string("providerId").notNullable();
@@ -100,7 +100,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTable("User");
-  await knex.schema.dropTable("Identity");
+  await knex.schema.dropTable("Account");
   await knex.schema.dropTable("Image");
   await knex.schema.dropTable("Poll");
   await knex.schema.dropTable("PollOption");

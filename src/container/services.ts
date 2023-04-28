@@ -4,8 +4,8 @@ import { ApiServicesInput } from "./types";
 import { CacheStorage } from "../domain/base/cache-storage";
 import { UserService } from "../domain/user/service/user-service";
 import { UserDbService } from "../services/user/user-service";
-import { IdentityService } from "../domain/user/service/identity-service";
-import { IdentityDbService } from "../services/user/identity-service";
+import { AccountService } from "../domain/user/service/account-service";
+import { AccountDbService } from "../services/user/account-service";
 import { ImageService } from "../domain/image/service/image-service";
 import { ImageDbService } from "../services/image/image-service";
 import { PollService } from "../domain/poll/service/poll-service";
@@ -18,7 +18,7 @@ import { PollOptionVoteDbService } from "../services/poll/poll-option-vote-servi
 export interface ApiServices {
   logger: Logger;
   user: UserService;
-  identity: IdentityService;
+  account: AccountService;
   image: ImageService;
   poll: PollService;
   pollOption: PollOptionService;
@@ -33,7 +33,7 @@ const createServices = (
 ) => {
   const logger = input?.logger ?? ConsoleLogger.Instance;
   const user = input?.user ?? new UserDbService();
-  const identity = input?.identity ?? new IdentityDbService();
+  const identity = input?.account ?? new AccountDbService();
   const image = input?.image ?? new ImageDbService();
   const poll = input?.poll ?? new PollDbService();
   const pollOption = input?.pollOption ?? new PollOptionDbService();
@@ -42,7 +42,7 @@ const createServices = (
   const services: ApiServices = {
     logger,
     user,
-    identity,
+    account: identity,
     image,
     poll,
     pollOption,

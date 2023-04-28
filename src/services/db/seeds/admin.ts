@@ -1,7 +1,7 @@
 import { createApiContext } from "../../../container/api-context";
 import configuration from "../../../container/configuration";
 import logger from "../../../domain/logger";
-import { IdentityProvider } from "../../../domain/user/entity/identity";
+import { AccountProvider } from "../../../domain/user/entity/account";
 import { UserRole } from "../../../domain/user/entity/user";
 
 export async function seed() {
@@ -11,8 +11,8 @@ export async function seed() {
   }
 
   const context = await createApiContext();
-  const identity = await context.services.identity.findByProviderId(
-    IdentityProvider.GOOGLE,
+  const identity = await context.services.account.findByProviderId(
+    AccountProvider.GOOGLE,
     configuration.admin_email
   );
 

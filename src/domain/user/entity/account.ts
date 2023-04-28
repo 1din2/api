@@ -7,14 +7,14 @@ import {
 import { RequiredJSONSchema } from "../../base/json-schema";
 import { User } from "./user";
 
-export enum IdentityProvider {
+export enum AccountProvider {
   FACEBOOK = "FACEBOOK",
   GOOGLE = "GOOGLE",
 }
 
-export interface IdentityData extends EntityData {
+export interface AccountData extends EntityData {
   userId: EntityId;
-  provider: IdentityProvider;
+  provider: AccountProvider;
   displayName: string;
   givenName?: string;
   familyName?: string;
@@ -24,15 +24,15 @@ export interface IdentityData extends EntityData {
   profile?: Record<string, unknown>;
 }
 
-export type IdentityCreateData = EntityCreateData<IdentityData>;
+export type AccountCreateData = EntityCreateData<AccountData>;
 
-export class Identity extends BaseEntity<IdentityData> {
+export class Account extends BaseEntity<AccountData> {
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {
       ...BaseEntity.jsonSchema.properties,
       userId: User.jsonSchema.properties.id,
-      provider: { type: "string", enum: Object.values(IdentityProvider) },
+      provider: { type: "string", enum: Object.values(AccountProvider) },
       displayName: { type: "string", minLength: 1, maxLength: 50 },
       givenName: { type: ["string", "null"], minLength: 1, maxLength: 50 },
       familyName: { type: ["string", "null"], minLength: 1, maxLength: 50 },
@@ -65,7 +65,7 @@ export class Identity extends BaseEntity<IdentityData> {
       "userId",
       "provider",
       "displayName",
-      "identityId",
+      "providerId",
     ]),
   };
 }

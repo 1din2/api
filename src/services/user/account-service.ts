@@ -1,43 +1,43 @@
 import { JsonValidator } from "../../domain/base/validator";
 import {
-  Identity,
-  IdentityCreateData,
-  IdentityData,
-  IdentityProvider,
-} from "../../domain/user/entity/identity";
-import { IdentityService } from "../../domain/user/service/identity-service";
+  Account,
+  AccountCreateData,
+  AccountData,
+  AccountProvider,
+} from "../../domain/user/entity/account";
+import { AccountService } from "../../domain/user/service/account-service";
 import { DbRepository } from "../db/repository";
 
-export class IdentityDbService
-  extends DbRepository<IdentityData>
-  implements IdentityService
+export class AccountDbService
+  extends DbRepository<AccountData>
+  implements AccountService
 {
   constructor() {
-    super("Identity", {
-      createValidator: new JsonValidator(Identity.jsonSchema),
+    super("Account", {
+      createValidator: new JsonValidator(Account.jsonSchema),
       updateValidator: new JsonValidator({
-        ...Identity.jsonSchema,
+        ...Account.jsonSchema,
         required: ["id"],
       }),
     });
   }
 
-  async findByUserId(userId: string): Promise<IdentityData[]> {
+  async findByUserId(userId: string): Promise<AccountData[]> {
     const models = await this.query.where({ userId });
     return models;
   }
 
   async findByProviderId(
-    provider: IdentityProvider,
+    provider: AccountProvider,
     providerId: string
-  ): Promise<IdentityData | null> {
+  ): Promise<AccountData | null> {
     const model = await this.query.where({ provider, providerId }).first();
     return model || null;
   }
 
   override async findUnique(
-    data: IdentityCreateData
-  ): Promise<IdentityData | null> {
+    data: AccountCreateData
+  ): Promise<AccountData | null> {
     const user = await this.findByProviderId(data.provider, data.providerId);
     if (user) return user;
 
