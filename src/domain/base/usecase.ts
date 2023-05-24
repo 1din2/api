@@ -18,6 +18,7 @@ export interface DomainContext {
   language: string;
   logger: Logger;
   isAuthenticated: boolean;
+  project: string;
 }
 
 export interface UseCase<

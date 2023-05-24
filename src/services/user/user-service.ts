@@ -16,6 +16,10 @@ export class UserDbService
       }),
     });
   }
+  async findByEmail(email: string): Promise<User | null> {
+    const model = await this.query().where({ email }).first();
+    return model ? this.toEntity(model) : null;
+  }
 
   override toEntity(data: UserData): User {
     return new User(data);
@@ -27,8 +31,12 @@ export class UserDbService
   }
 
   override async findUnique(data: UserCreateData): Promise<User | null> {
-    const user = await this.findByUid(data.uid);
+    let user = await this.findByUid(data.uid);
     if (user) return user;
+    if (data.email) {
+      user = await this.findByEmail(data.email);
+      if (user) return user;
+    }
 
     return super.findUnique(data);
   }

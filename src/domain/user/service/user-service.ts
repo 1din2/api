@@ -3,4 +3,5 @@ import { User, UserData } from "../entity/user";
 
 export interface UserService extends Repository<UserData, User> {
   findByUid(uid: string): Promise<User | null>;
+  findByEmail(email: string): Promise<User | null>;
 }

@@ -9,19 +9,21 @@ import { CacheStorage } from "../domain/base/cache-storage";
 import getHeadersData from "./helpers/get-headers-data";
 import { AuthDomainContext } from "../domain/user/usecase/auth-usercase";
 import getCurrentUser from "./helpers/get-current-user";
+import { ApiUsecases, getApiUsecases } from "./usecases";
 
 export interface ApiContext extends AuthDomainContext {
   services: ApiServices;
-  // usecases: ApiUsecases;
+  usecases: ApiUsecases;
   end: () => Promise<void>;
 }
 
 const getDataFromInput = (input: ApiContextInput): ApiUserData => {
-  const { language, isAuthenticated } = input;
+  const { language, isAuthenticated, project } = input;
 
   return {
     language,
     isAuthenticated,
+    project,
   };
 };
 
@@ -51,11 +53,17 @@ export async function createApiContext(
     : {
         language: "en",
         isAuthenticated: false,
+        project: "",
       };
+
+  if (!data.project) throw new Error("Project header is invalid");
+
+  const usecases = getApiUsecases(services);
 
   const context: ApiContext = {
     ...data,
     services,
+    usecases,
     logger,
     end: async () => {
       await redis.quit();

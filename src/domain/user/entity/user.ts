@@ -24,6 +24,7 @@ export interface UserData extends EntityData {
   familyName?: string;
   gender?: Gender;
   email?: string;
+  project: string;
 }
 
 export type UserCreateData = EntityCreateData<UserData>;
@@ -50,6 +51,10 @@ export class User extends BaseEntity<UserData> implements UserData {
     return this.get("familyName");
   }
 
+  get project() {
+    return this.get("project");
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {
@@ -61,11 +66,13 @@ export class User extends BaseEntity<UserData> implements UserData {
       familyName: { type: ["string", "null"], minLength: 1, maxLength: 50 },
       gender: { type: ["string", "null"], enum: Object.values(Gender) },
       email: { type: ["string", "null"], format: "email" },
+      project: { type: "string", minLength: 1, maxLength: 10 },
     },
     required: BaseEntity.jsonSchema.required.concat([
       "role",
       "displayName",
       "uid",
+      "project",
     ]),
   };
 }

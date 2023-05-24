@@ -16,6 +16,7 @@ export const createUserData = (
   uid: generateShortUniqueId(),
   displayName: faker.name.findName(),
   role: UserRole.USER,
+  project: "ro",
   ...args,
 });
 

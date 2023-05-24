@@ -5,18 +5,14 @@ import {
   ApolloServerPluginCacheControl,
   ApolloServerPluginLandingPageGraphQLPlayground,
 } from "apollo-server-core";
-import express from "express";
 import http from "http";
-import configuration from "../container/configuration";
+import { Express } from "express";
 import createSchema from "./create-schema";
-import { createApiContext } from "../container/api-context";
 
-async function startApolloServer() {
+async function startApolloServer(app: Express, httpServer: http.Server) {
   const schema = await createSchema();
-  const app = express();
-  const httpServer = http.createServer(app);
   const server = new ApolloServer({
-    context: ({ req }) => createApiContext(req),
+    context: ({ req }) => req.apiContext,
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -30,17 +26,11 @@ async function startApolloServer() {
     ],
   });
 
+  server.applyMiddleware({ app, path: "/graphql" });
+
   await server.start();
 
-  server.applyMiddleware({ app });
-  app.get("/favicon.ico", (_req, res) => res.sendStatus(204));
-
-  await new Promise<void>((resolve) =>
-    httpServer.listen({ port: configuration.port }, resolve)
-  );
-  console.log(
-    `🚀 Server ready at http://localhost:${configuration.port}${server.graphqlPath}`
-  );
+  return server;
 }
 
 export default startApolloServer;

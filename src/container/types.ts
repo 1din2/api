@@ -17,6 +17,9 @@ export type ApiServicesInput = {
   pollOptionVote: PollOptionVoteService;
 };
 
-export type ApiUserData = Pick<DomainContext, "language" | "isAuthenticated">;
+export type ApiUserData = Pick<
+  DomainContext,
+  "language" | "isAuthenticated" | "project"
+>;
 
 export type ApiContextInput = ApiUserData & { services?: ApiServicesInput };

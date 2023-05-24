@@ -63,6 +63,13 @@ export class Account extends BaseEntity<AccountData> implements AccountData {
     return this.get("profile");
   }
 
+  static toProvider(value: string): AccountProvider {
+    const input = value.trim().toLowerCase();
+    if (input.startsWith("facebook")) return AccountProvider.FACEBOOK;
+    if (input.startsWith("google")) return AccountProvider.GOOGLE;
+    throw new Error(`Invalid provider: ${value}`);
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {

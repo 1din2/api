@@ -8,14 +8,17 @@ registerEnumType(Gender, { name: "Gender" });
 @ObjectType("PublicUser")
 export class TypePublicUser
   extends TypeBaseEntity
-  implements Omit<UserData, "uid" | "role">
+  implements Omit<UserData, "uid" | "role" | "project">
 {
   @Field()
   displayName!: string;
 }
 
 @ObjectType("User")
-export class TypeUser extends TypePublicUser implements Omit<UserData, "uid"> {
+export class TypeUser
+  extends TypePublicUser
+  implements Omit<UserData, "uid" | "project">
+{
   @Field({ nullable: true })
   givenName?: string;
 

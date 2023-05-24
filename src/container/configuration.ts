@@ -37,6 +37,10 @@ export interface Configuration {
   admin_email?: string;
 
   elasticsearch_url: string;
+  projects: string[];
+  root_path: string;
+  facebook_app_id: string;
+  facebook_app_secret: string;
 }
 
 let configuration: Configuration;
@@ -60,6 +64,10 @@ const envsToInclude: (keyof Configuration)[] = [
   "aws_image_s3_region",
 
   "elasticsearch_url",
+  "projects",
+  "root_path",
+  "facebook_app_id",
+  "facebook_app_secret",
 ];
 
 function readJson(readPath: string) {
@@ -149,6 +157,11 @@ function load() {
 
   const intFields: (keyof Configuration)[] = [];
   ensureInteger(intFields, config);
+
+  config.projects =
+    typeof config.projects === "string"
+      ? (config.projects as string).split(/[,;]/g)
+      : [];
 
   return config;
 }

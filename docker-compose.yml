@@ -12,8 +12,8 @@ services:
       - ${WEB_PORT:-42102}:42102 # Application port
       - ${WEB_DEBUG_PORT:-9222}:9222 # Debugging port
     environment:
-      REDISCLOUD_URL: redis://poll
-      DATABASE_URL: postgres://poll@poll:5432/poll
+      REDISCLOUD_URL: redis://1of2
+      DATABASE_URL: postgres://1of2@1of2:5432/1of2
 
     volumes:
       - .:/usr/src/app
@@ -44,8 +44,8 @@ services:
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/1-database.sql
       - postgres-storage:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: "poll"
-      POSTGRES_DB: "poll"
+      POSTGRES_USER: "1of2"
+      POSTGRES_DB: "1of2"
       POSTGRES_HOST_AUTH_METHOD: "trust"
       # POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
