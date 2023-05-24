@@ -1,10 +1,10 @@
 import { BaseUseCase, UseCaseEvents, DomainContext } from "../../base/usecase";
 import { Validator } from "../../base/validator";
 import { AuthenticationError, ForbiddenError } from "../../base/errors";
-import { UserData, UserRole } from "../entity/user";
+import { User, UserRole } from "../entity/user";
 
 export interface AuthDomainContext extends DomainContext {
-  currentUser: UserData;
+  currentUser: User;
 }
 
 export abstract class AuthUseCase<
@@ -24,7 +24,7 @@ export abstract class AuthUseCase<
     super(inputValidator);
   }
 
-  private checkCurrentUser(currentUser?: UserData) {
+  private checkCurrentUser(currentUser?: User) {
     if (!currentUser || !currentUser.id)
       throw new AuthenticationError(`No access to ${this.constructor.name}`);
     if (

@@ -23,10 +23,10 @@ export class TypeBaseEntity implements EntityData {
   @Field(() => ID)
   id!: EntityId;
 
-  @Field()
+  @Field(() => BigInt)
   createdAt!: number;
 
-  @Field({ nullable: true })
+  @Field(() => BigInt, { nullable: true })
   updatedAt!: number;
 }
 
@@ -44,9 +44,7 @@ export type CursorPageEdge<T> = {
   cursor: string;
 };
 
-export function createCursorPageEdgeClass<TItem>(
-  TItemClass: ClassType<TItem>
-) {
+export function createCursorPageEdgeClass<TItem>(TItemClass: ClassType<TItem>) {
   @ObjectType(`${TItemClass.name.replace(/^Type/, "")}CursorEdge`)
   class ConnectionPageEdge {
     @Field(() => TItemClass)

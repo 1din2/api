@@ -37,7 +37,55 @@ export interface PollData extends EntityData {
 export type PollCreateData = EntityCreateData<PollData>;
 export type PollUpdateData = EntityUpdateData<PollData>;
 
-export class Poll extends BaseEntity<PollData> {
+export class Poll extends BaseEntity<PollData> implements PollData {
+  get userId() {
+    return this.get("userId");
+  }
+
+  get status() {
+    return this.get("status");
+  }
+
+  get title() {
+    return this.get("title");
+  }
+
+  get slug() {
+    return this.get("slug");
+  }
+
+  get description() {
+    return this.get("description");
+  }
+
+  get imageId() {
+    return this.get("imageId");
+  }
+
+  get minSelect() {
+    return this.get("minSelect");
+  }
+
+  get maxSelect() {
+    return this.get("maxSelect");
+  }
+
+  get language() {
+    return this.get("language");
+  }
+
+  get country() {
+    return this.get("country");
+  }
+
+  get type() {
+    return this.get("type");
+  }
+
+  get endsAt() {
+    return this.get("endsAt");
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {

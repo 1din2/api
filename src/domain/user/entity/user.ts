@@ -29,7 +29,27 @@ export interface UserData extends EntityData {
 export type UserCreateData = EntityCreateData<UserData>;
 export type UserUpdateData = EntityUpdateData<UserData>;
 
-export class User extends BaseEntity<UserData> {
+export class User extends BaseEntity<UserData> implements UserData {
+  get role() {
+    return this.get("role");
+  }
+
+  get displayName() {
+    return this.get("displayName");
+  }
+
+  get uid() {
+    return this.get("uid");
+  }
+
+  get givenName() {
+    return this.get("givenName");
+  }
+
+  get familyName() {
+    return this.get("familyName");
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {

@@ -18,7 +18,30 @@ export interface PollOptionData extends EntityData {
 export type PollOptionCreateData = EntityCreateData<PollOptionData>;
 export type PollOptionUpdateData = EntityUpdateData<PollOptionData>;
 
-export class PollOption extends BaseEntity<PollOptionData> {
+export class PollOption
+  extends BaseEntity<PollOptionData>
+  implements PollOptionData
+{
+  get pollId() {
+    return this.get("pollId");
+  }
+
+  get title() {
+    return this.get("title");
+  }
+
+  get priority() {
+    return this.get("priority");
+  }
+
+  get description() {
+    return this.get("description");
+  }
+
+  get imageId() {
+    return this.get("imageId");
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {

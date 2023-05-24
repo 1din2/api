@@ -29,7 +29,51 @@ export interface ImageData extends EntityData {
 export type ImageCreateData = EntityCreateData<ImageData>;
 export type ImageUpdateData = EntityUpdateData<ImageData>;
 
-export class Image extends BaseEntity<ImageData> {
+export class Image extends BaseEntity<ImageData> implements ImageData {
+  get contentType() {
+    return this.get("contentType");
+  }
+
+  get hash() {
+    return this.get("hash");
+  }
+
+  get provider() {
+    return this.get("provider");
+  }
+
+  get color() {
+    return this.get("color");
+  }
+
+  get height() {
+    return this.get("height");
+  }
+
+  get width() {
+    return this.get("width");
+  }
+
+  get originalName() {
+    return this.get("originalName");
+  }
+
+  get length() {
+    return this.get("length");
+  }
+
+  get content() {
+    return this.get("content");
+  }
+
+  get url() {
+    return this.get("url");
+  }
+
+  get userId() {
+    return this.get("userId");
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {

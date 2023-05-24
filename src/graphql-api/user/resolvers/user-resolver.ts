@@ -6,6 +6,6 @@ import { TypeUser } from "../types/type-user";
 export default class UserResolver {
   @Query(() => TypeUser, { nullable: true })
   me(@Ctx() { currentUser }: ApiContext) {
-    return currentUser;
+    return currentUser.getData();
   }
 }
