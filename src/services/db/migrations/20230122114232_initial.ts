@@ -62,7 +62,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("slug").notNullable();
     table.string("description");
     table.string("language", 2).notNullable();
-    table.string("country", 2);
+    table.string("project", 10).notNullable();
     table.integer("minSelect").notNullable();
     table.integer("maxSelect").notNullable();
     table.dateTime("endsAt").notNullable().index();
@@ -71,8 +71,9 @@ export async function up(knex: Knex): Promise<void> {
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
 
-    table.index(["country", "language"]);
-    table.index(["country", "language", "status", "createdAt"]);
+    table.index(["project", "language"]);
+    table.index(["project", "language", "status", "createdAt"]);
+    table.unique(["project", "slug"]);
   });
 
   await knex.schema.createTable("PollOption", (table) => {

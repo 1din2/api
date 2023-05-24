@@ -29,7 +29,7 @@ export interface PollData extends EntityData {
   minSelect: number;
   maxSelect: number;
   language: string;
-  country: string;
+  project: string;
   type: PollType;
   endsAt: number;
 }
@@ -74,8 +74,8 @@ export class Poll extends BaseEntity<PollData> implements PollData {
     return this.get("language");
   }
 
-  get country() {
-    return this.get("country");
+  get project() {
+    return this.get("project");
   }
 
   get type() {
@@ -101,7 +101,7 @@ export class Poll extends BaseEntity<PollData> implements PollData {
       minSelect: { type: "integer", minimum: 1, maximum: 10 },
       maxSelect: { type: "integer", minimum: 1, maximum: 10 },
       language: { type: "string", pattern: "^[a-z]{2}$" },
-      country: { type: "string", pattern: "^[a-z]{2}$" },
+      project: { type: ["string"], pattern: "^[a-z0-9.]{2,10}$" },
       type: { type: "string", enum: Object.values(PollType) },
       endsAt: {
         type: "integer",
@@ -117,7 +117,7 @@ export class Poll extends BaseEntity<PollData> implements PollData {
       "minSelect",
       "maxSelect",
       "language",
-      "country",
+      "project",
       "type",
       "endsAt",
     ]),
