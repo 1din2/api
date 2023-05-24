@@ -21,6 +21,7 @@ async function main() {
 
   const knex = Knex(config);
   const database = extractDatabaseName();
+  console.log(`Dropping database ${database}`);
   const tables = await knex
     .select("table_name")
     .table("information_schema.tables")

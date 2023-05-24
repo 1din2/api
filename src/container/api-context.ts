@@ -56,7 +56,7 @@ export async function createApiContext(
         project: "",
       };
 
-  if (!data.project) throw new Error("Project header is invalid");
+  // if (!data.project) throw new Error("Project header is invalid");
 
   const usecases = getApiUsecases(services);
 

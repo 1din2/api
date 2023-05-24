@@ -1,7 +1,7 @@
 version: "3.1"
 services:
   web:
-    container_name: poll_api
+    container_name: 1of2_api
     build: .
     env_file:
       - .env
@@ -9,11 +9,11 @@ services:
       - db
       - redis
     ports:
-      - ${WEB_PORT:-42102}:42102 # Application port
+      - ${WEB_PORT:-42123}:42123 # Application port
       - ${WEB_DEBUG_PORT:-9222}:9222 # Debugging port
     environment:
-      REDISCLOUD_URL: redis://1of2
-      DATABASE_URL: postgres://1of2@1of2:5432/1of2
+      REDISCLOUD_URL: redis://1of2_cache
+      DATABASE_URL: postgres://1of2:1of2@1of2_db:5432/1of2
 
     volumes:
       - .:/usr/src/app
@@ -33,7 +33,7 @@ services:
   # Should only be used in development, we use seperate host for staging and prod
   db:
     image: postgres:latest
-    container_name: poll_db
+    container_name: 1of2_db
     command: ["postgres", "-c", "max_connections=200"]
     restart: always
     networks:
@@ -51,7 +51,7 @@ services:
 
   redis:
     image: redis
-    container_name: poll_cache
+    container_name: 1of2_cache
     ports:
       # expose for local testing
       - ${API_REDIS_PORT:-6379}:6379

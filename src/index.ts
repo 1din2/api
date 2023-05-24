@@ -9,6 +9,7 @@ async function bootstrap() {
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: configuration.port }, resolve)
   );
+
   console.log(
     `🚀 Server ready at http://localhost:${configuration.port}${api.graphqlPath}`
   );

@@ -49,11 +49,12 @@ export interface IEmitter<EventDataMap extends Events> {
  * Base events emitter
  */
 export class Emitter<EventDataMap extends Events>
-  implements IEmitter<EventDataMap> {
-  private _emitter: Emittery<EventDataMap>;
+  implements IEmitter<EventDataMap>
+{
+  private _emitter: Emittery.Typed<EventDataMap>;
 
   public constructor() {
-    this._emitter = new Emittery<EventDataMap>();
+    this._emitter = new Emittery.Typed<EventDataMap>();
   }
 
   public on<Name extends keyof EventDataMap>(

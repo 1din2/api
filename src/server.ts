@@ -14,6 +14,7 @@ passport.use(
       clientSecret: configuration.facebook_app_secret,
       callbackURL: `${configuration.root_path}/auth/callback/facebook`,
       passReqToCallback: true,
+      // scope: ["email", "public_profile"],
     },
     function verify(req, _accessToken, _refreshToken, profile, done) {
       console.log("profile", profile);
@@ -32,17 +33,7 @@ export default () => {
   rateLimit(app);
 
   app.get("/favicon.ico", (_req, res) => res.sendStatus(204));
-  app.get("/", (_req, res) => res.status(200).send("go to /graphql"));
-
-  app.get("/auth/facebook", passport.authenticate("facebook"));
-  app.get(
-    "/auth/callback/facebook",
-    passport.authenticate("facebook"),
-    function (req, res) {
-      console.log("user", req.user);
-      res.redirect("/");
-    }
-  );
+  app.get("/", (_req, res) => res.sendStatus(200));
 
   app.use(async (req, _res, next) => {
     try {
@@ -52,6 +43,23 @@ export default () => {
       next(err);
     }
   });
+
+  app.get(
+    "/auth/facebook",
+    passport.authenticate("facebook", {
+      scope: ["email", "public_profile"],
+    })
+  );
+  app.get(
+    "/auth/callback/facebook",
+    passport.authenticate("facebook", {
+      scope: ["email", "public_profile"],
+    }),
+    function (req, res) {
+      console.log("user", req.user);
+      res.redirect("/");
+    }
+  );
 
   const httpServer = http.createServer(app);
 

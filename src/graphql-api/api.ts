@@ -26,9 +26,9 @@ async function startApolloServer(app: Express, httpServer: http.Server) {
     ],
   });
 
-  server.applyMiddleware({ app, path: "/graphql" });
-
   await server.start();
+
+  server.applyMiddleware({ app, path: "/graphql" });
 
   return server;
 }
