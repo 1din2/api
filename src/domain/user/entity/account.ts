@@ -26,7 +26,43 @@ export interface AccountData extends EntityData {
 
 export type AccountCreateData = EntityCreateData<AccountData>;
 
-export class Account extends BaseEntity<AccountData> {
+export class Account extends BaseEntity<AccountData> implements AccountData {
+  get userId() {
+    return this.get("userId");
+  }
+
+  get provider() {
+    return this.get("provider");
+  }
+
+  get displayName() {
+    return this.get("displayName");
+  }
+
+  get givenName() {
+    return this.get("givenName");
+  }
+
+  get familyName() {
+    return this.get("familyName");
+  }
+
+  get providerId() {
+    return this.get("providerId");
+  }
+
+  get emails() {
+    return this.get("emails");
+  }
+
+  get photos() {
+    return this.get("photos");
+  }
+
+  get profile() {
+    return this.get("profile");
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {

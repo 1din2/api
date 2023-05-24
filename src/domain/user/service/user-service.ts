@@ -1,6 +1,6 @@
 import { Repository } from "../../base/repository";
-import { UserData } from "../entity/user";
+import { User, UserData } from "../entity/user";
 
-export interface UserService extends Repository<UserData> {
-  findByUid(uid: string): Promise<UserData | null>;
+export interface UserService extends Repository<UserData, User> {
+  findByUid(uid: string): Promise<User | null>;
 }

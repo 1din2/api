@@ -1,12 +1,12 @@
 import { EntityId } from "../../base/entity";
 import { Repository } from "../../base/repository";
-import { AccountData, AccountProvider } from "../entity/account";
+import { Account, AccountData, AccountProvider } from "../entity/account";
 
-export interface AccountService extends Repository<AccountData> {
+export interface AccountService extends Repository<AccountData, Account> {
   findByProviderId(
     provider: AccountProvider,
     providerId: string
-  ): Promise<AccountData | null>;
+  ): Promise<Account | null>;
 
-  findByUserId(userId: EntityId): Promise<AccountData[]>;
+  findByUserId(userId: EntityId): Promise<Account[]>;
 }

@@ -10,7 +10,7 @@ import {
 import { DbRepository } from "../db/repository";
 
 export class PollOptionVoteDbService
-  extends DbRepository<PollOptionVoteData>
+  extends DbRepository<PollOptionVoteData, PollOptionVote>
   implements PollOptionVoteService
 {
   constructor() {
@@ -23,11 +23,15 @@ export class PollOptionVoteDbService
     });
   }
 
+  override toEntity(data: PollOptionVoteData): PollOptionVote {
+    return new PollOptionVote(data);
+  }
+
   async countVotes({
     pollId,
     pollOptionId,
   }: CountPollOptionVoteParams): Promise<number> {
-    const query = this.query.count("userId").as("total").where({ pollId });
+    const query = this.query().count("userId").as("total").where({ pollId });
     if (pollOptionId) query.where({ pollOptionId });
     const item = await query.first();
     return item ? parseInt(item.total.toString(), 10) : 0;

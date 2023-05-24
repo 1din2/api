@@ -9,7 +9,7 @@ import { AccountService } from "../../domain/user/service/account-service";
 import { DbRepository } from "../db/repository";
 
 export class AccountDbService
-  extends DbRepository<AccountData>
+  extends DbRepository<AccountData, Account>
   implements AccountService
 {
   constructor() {
@@ -22,22 +22,24 @@ export class AccountDbService
     });
   }
 
-  async findByUserId(userId: string): Promise<AccountData[]> {
-    const models = await this.query.where({ userId });
-    return models;
+  override toEntity(data: AccountData): Account {
+    return new Account(data);
+  }
+
+  async findByUserId(userId: string): Promise<Account[]> {
+    const models = await this.query().where({ userId });
+    return this.toEntities(models);
   }
 
   async findByProviderId(
     provider: AccountProvider,
     providerId: string
-  ): Promise<AccountData | null> {
-    const model = await this.query.where({ provider, providerId }).first();
-    return model || null;
+  ): Promise<Account | null> {
+    const model = await this.query().where({ provider, providerId }).first();
+    return model ? this.toEntity(model) : null;
   }
 
-  override async findUnique(
-    data: AccountCreateData
-  ): Promise<AccountData | null> {
+  override async findUnique(data: AccountCreateData): Promise<Account | null> {
     const user = await this.findByProviderId(data.provider, data.providerId);
     if (user) return user;
 

@@ -11,13 +11,13 @@ export async function seed() {
   }
 
   const context = await createApiContext();
-  const identity = await context.services.account.findByProviderId(
+  const account = await context.services.account.findByProviderId(
     AccountProvider.GOOGLE,
     configuration.admin_email
   );
 
-  const user = identity
-    ? await context.services.user.findById(identity.userId)
+  const user = account
+    ? await context.services.user.findById(account.userId)
     : null;
 
   if (!user) {

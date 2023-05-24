@@ -62,7 +62,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("slug").notNullable();
     table.string("description");
     table.string("language", 2).notNullable();
-    table.string("country", 2).notNullable();
+    table.string("country", 2);
     table.integer("minSelect").notNullable();
     table.integer("maxSelect").notNullable();
     table.dateTime("endsAt").notNullable().index();

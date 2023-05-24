@@ -4,7 +4,7 @@ import { UserService } from "../../domain/user/service/user-service";
 import { DbRepository } from "../db/repository";
 
 export class UserDbService
-  extends DbRepository<UserData>
+  extends DbRepository<UserData, User>
   implements UserService
 {
   constructor() {
@@ -17,12 +17,16 @@ export class UserDbService
     });
   }
 
-  async findByUid(uid: string): Promise<UserData | null> {
-    const model = await this.query.where({ uid }).first();
-    return model || null;
+  override toEntity(data: UserData): User {
+    return new User(data);
   }
 
-  override async findUnique(data: UserCreateData): Promise<UserData | null> {
+  async findByUid(uid: string): Promise<User | null> {
+    const model = await this.query().where({ uid }).first();
+    return model ? this.toEntity(model) : null;
+  }
+
+  override async findUnique(data: UserCreateData): Promise<User | null> {
     const user = await this.findByUid(data.uid);
     if (user) return user;
 

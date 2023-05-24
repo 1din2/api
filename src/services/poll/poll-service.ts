@@ -4,7 +4,7 @@ import { PollService } from "../../domain/poll/service/poll-service";
 import { DbRepository } from "../db/repository";
 
 export class PollDbService
-  extends DbRepository<PollData>
+  extends DbRepository<PollData, Poll>
   implements PollService
 {
   constructor() {
@@ -15,5 +15,9 @@ export class PollDbService
         required: ["id"],
       }),
     });
+  }
+
+  override toEntity(data: PollData): Poll {
+    return new Poll(data);
   }
 }

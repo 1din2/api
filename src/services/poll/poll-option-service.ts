@@ -8,7 +8,7 @@ import { PollOptionService } from "../../domain/poll/service/poll-option-service
 import { DbRepository } from "../db/repository";
 
 export class PollOptionDbService
-  extends DbRepository<PollOptionData>
+  extends DbRepository<PollOptionData, PollOption>
   implements PollOptionService
 {
   constructor() {
@@ -21,7 +21,13 @@ export class PollOptionDbService
     });
   }
 
-  getByPollId(pollId: EntityId): Promise<PollOptionData[]> {
-    return this.query.where({ pollId }).orderBy("priority");
+  override toEntity(data: PollOptionData) {
+    return new PollOption(data);
+  }
+
+  async getByPollId(pollId: EntityId): Promise<PollOption[]> {
+    const items = await this.query().where({ pollId }).orderBy("priority");
+
+    return this.toEntities(items);
   }
 }
