@@ -58,7 +58,6 @@ export async function createApiContext(
     : {
         language: "en",
         isAuthenticated: false,
-        project: "",
         ip: "",
       };
 

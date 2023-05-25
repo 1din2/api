@@ -12,10 +12,36 @@ import { ApiContext } from "../../../container/api-context";
 import { TypePoll } from "../types/poll-type";
 import { EntityId } from "../../../domain/base/entity";
 import { TypePollOption } from "../types/poll-option-type";
-import { Poll } from "../../../domain/poll/entity/poll";
+import { Poll, PollStatus } from "../../../domain/poll/entity/poll";
+import { InvalidInputError } from "../../../domain/base/errors";
+import { UserRole } from "../../../domain/user/entity/user";
 
 @Resolver(() => TypePoll)
 export default class PollResolver {
+  @Query(() => [TypePoll], { nullable: true, description: "Find polls" })
+  findPollList(
+    @Ctx() { services, currentUser, project }: ApiContext,
+    @Arg("limit", () => Int, { nullable: true }) limit?: number,
+    @Arg("offset", () => Int, { nullable: true }) offset?: number,
+    @Arg("status", () => [PollStatus], { nullable: true }) status?: PollStatus[]
+  ) {
+    if (limit && (limit > 50 || limit < 0))
+      throw new InvalidInputError("Limit must be between 0 and 50");
+
+    if (offset && offset < 0)
+      throw new InvalidInputError("Offset must be greater than 0");
+
+    if (offset) {
+      if (!currentUser && offset > 2)
+        throw new InvalidInputError("Offset must be between 0 and 2");
+
+      if (currentUser && currentUser.role === UserRole.USER && offset > 3)
+        throw new InvalidInputError("Offset must be between 0 and 3");
+    }
+
+    return services.poll.find({ project, limit, offset, status });
+  }
+
   @Query(() => TypePoll, { nullable: true, description: "Get poll by id" })
   pollById(@Arg("id", () => ID) id: EntityId, @Ctx() { services }: ApiContext) {
     return services.poll.findById(id);
@@ -26,6 +52,7 @@ export default class PollResolver {
     @Arg("slug", () => ID) slug: EntityId,
     @Ctx() { services, project }: ApiContext
   ) {
+    if (!project) throw new InvalidInputError("Project is required");
     return services.poll.findBySlug({ slug, project });
   }
 

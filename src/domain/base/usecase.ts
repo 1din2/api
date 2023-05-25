@@ -18,7 +18,7 @@ export interface DomainContext {
   language: string;
   logger: Logger;
   isAuthenticated: boolean;
-  project: string;
+  project?: string;
   ip: string;
 }
 

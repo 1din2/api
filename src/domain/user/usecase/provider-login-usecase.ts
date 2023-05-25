@@ -4,6 +4,7 @@ import { User, UserRole } from "../entity/user";
 import { UserService } from "../service/user-service";
 import { AccountService } from "../service/account-service";
 import { Account } from "../entity/account";
+import { InvalidInputError } from "../../base/errors";
 
 export interface ProviderLoginInput {
   // accessToken: string;
@@ -27,6 +28,8 @@ export class ProviderLoginUseCase extends BaseUseCase<
     { profile }: ProviderLoginInput,
     { project }: DomainContext
   ): Promise<User> {
+    if (!project) throw new InvalidInputError("Project is required");
+
     const provider = Account.toProvider(profile.provider);
     const providerId = profile.id;
 

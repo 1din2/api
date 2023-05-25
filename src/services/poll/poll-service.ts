@@ -3,6 +3,7 @@ import { JsonValidator } from "../../domain/base/validator";
 import { Poll, PollData } from "../../domain/poll/entity/poll";
 import {
   FindPollBySlugParams,
+  FindPollParams,
   PollService,
 } from "../../domain/poll/service/poll-service";
 import { DbRepository } from "../db/repository";
@@ -19,6 +20,24 @@ export class PollDbService
         required: ["id"],
       }),
     });
+  }
+
+  async find({
+    limit,
+    offset,
+    project,
+    status,
+  }: FindPollParams): Promise<Poll[]> {
+    const query = this.query()
+      .limit(limit || 10)
+      .offset(offset || 0);
+
+    if (project) query.where({ project });
+    if (status) query.whereIn("status", status);
+
+    const items = await query.orderBy("id", "desc");
+
+    return this.toEntities(items);
   }
 
   async findBySlug({
