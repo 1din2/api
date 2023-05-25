@@ -13,16 +13,17 @@ export const clearIpProject = (ip: string) => {
 export default (req: Request, res: Response): ApiUserData => {
   const language = getCurrentLanguage(req);
   const isAuthenticated = isAuthorized(req);
+  const ip = req.ip;
   const project = (req.headers["x-project"] ||
     req.query.project ||
     res.req?.headers["x-project"] ||
     res.req?.query.project ||
-    IP_PROJECT[req.ip]) as string;
+    IP_PROJECT[ip]) as string;
 
   if (project && !configuration.projects.includes(project))
     throw new Error("Project header is invalid");
 
-  if (project) IP_PROJECT[req.ip] = project;
+  if (project) IP_PROJECT[ip] = project;
 
-  return { language, isAuthenticated, project };
+  return { language, isAuthenticated, project, ip };
 };

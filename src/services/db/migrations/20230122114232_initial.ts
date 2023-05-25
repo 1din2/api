@@ -93,6 +93,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("userId").notNullable().references("User.id").index();
     table.string("pollId").notNullable().references("Poll.id").index();
     table.string("pollOptionId").notNullable().references("PollOption.id");
+    table.string("ip").notNullable();
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
 

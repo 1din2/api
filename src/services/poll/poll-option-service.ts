@@ -25,7 +25,7 @@ export class PollOptionDbService
     return new PollOption(data);
   }
 
-  async getByPollId(pollId: EntityId): Promise<PollOption[]> {
+  async findByPollId(pollId: EntityId): Promise<PollOption[]> {
     const items = await this.query().where({ pollId }).orderBy("priority");
 
     return this.toEntities(items);

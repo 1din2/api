@@ -4,5 +4,5 @@ import { PollOption, PollOptionData } from "../entity/poll-option";
 
 export interface PollOptionService
   extends Repository<PollOptionData, PollOption> {
-  getByPollId(pollId: EntityId): Promise<PollOption[]>;
+  findByPollId(pollId: EntityId): Promise<PollOption[]>;
 }

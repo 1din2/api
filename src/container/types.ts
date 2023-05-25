@@ -6,6 +6,7 @@ import { PollOptionVoteService } from "../domain/poll/service/poll-option-vote-s
 import { PollService } from "../domain/poll/service/poll-service";
 import { AccountService } from "../domain/user/service/account-service";
 import { UserService } from "../domain/user/service/user-service";
+import { VoterService } from "../domain/user/service/voter-service";
 
 export type ApiServicesInput = {
   logger?: Logger;
@@ -14,12 +15,13 @@ export type ApiServicesInput = {
   image?: ImageService;
   poll?: PollService;
   pollOption?: PollOptionService;
-  pollOptionVote: PollOptionVoteService;
+  pollOptionVote?: PollOptionVoteService;
+  voter?: VoterService;
 };
 
 export type ApiUserData = Pick<
   DomainContext,
-  "language" | "isAuthenticated" | "project"
+  "language" | "isAuthenticated" | "project" | "ip"
 >;
 
 export type ApiContextInput = ApiUserData & { services?: ApiServicesInput };

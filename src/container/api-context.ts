@@ -18,12 +18,13 @@ export interface ApiContext extends AuthDomainContext {
 }
 
 const getDataFromInput = (input: ApiContextInput): ApiUserData => {
-  const { language, isAuthenticated, project } = input;
+  const { language, isAuthenticated, project, ip } = input;
 
   return {
     language,
     isAuthenticated,
     project,
+    ip,
   };
 };
 
@@ -58,6 +59,7 @@ export async function createApiContext(
         language: "en",
         isAuthenticated: false,
         project: "",
+        ip: "",
       };
 
   // if (!data.project) throw new Error("Project header is invalid");

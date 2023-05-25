@@ -1,5 +1,11 @@
 import { Repository } from "../../base/repository";
 import { Poll, PollData } from "../entity/poll";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PollService extends Repository<PollData, Poll> {}
+export interface FindPollBySlugParams {
+  slug: string;
+  project: string;
+}
+
+export interface PollService extends Repository<PollData, Poll> {
+  findBySlug(params: FindPollBySlugParams): Promise<Poll | null>;
+}

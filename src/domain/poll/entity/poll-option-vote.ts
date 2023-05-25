@@ -11,6 +11,7 @@ export interface PollOptionVoteData extends EntityData {
   pollId: EntityId;
   pollOptionId: EntityId;
   userId: EntityId;
+  ip: string;
 }
 
 export type PollOptionVoteCreateData = EntityCreateData<PollOptionVoteData>;
@@ -32,6 +33,10 @@ export class PollOptionVote
     return this.get("userId");
   }
 
+  get ip() {
+    return this.get("ip");
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {
@@ -39,11 +44,13 @@ export class PollOptionVote
       pollId: BaseEntity.jsonSchema.properties.id,
       pollOptionId: BaseEntity.jsonSchema.properties.id,
       userId: BaseEntity.jsonSchema.properties.id,
+      ip: { type: "string" },
     },
     required: BaseEntity.jsonSchema.required.concat([
       "pollId",
       "pollOptionId",
       "userId",
+      "ip",
     ]),
   };
 }
