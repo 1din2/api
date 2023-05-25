@@ -5,6 +5,9 @@ import { EntityId } from "../../../domain/base/entity";
 
 @ObjectType("PollOption")
 export class TypePollOption extends TypeBaseEntity implements PollOptionData {
+  @Field()
+  color!: string;
+
   @Field(() => Int)
   priority!: number;
 

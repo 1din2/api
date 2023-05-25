@@ -6,7 +6,7 @@ const atonic = require("atonic");
 
 export const removeDiacritics = (str: string): string => atonic(str);
 
-export const slug = (name: string) => slugFn(name);
+export const slugify = (name: string) => slugFn(name);
 
 /**
  * Generate an uniq id.

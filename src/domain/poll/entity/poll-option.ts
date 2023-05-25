@@ -13,6 +13,7 @@ export interface PollOptionData extends EntityData {
   priority: number;
   description?: string;
   imageId?: EntityId;
+  color: string;
 }
 
 export type PollOptionCreateData = EntityCreateData<PollOptionData>;
@@ -42,6 +43,10 @@ export class PollOption
     return this.get("imageId");
   }
 
+  get color() {
+    return this.get("color");
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {
@@ -53,11 +58,13 @@ export class PollOption
       imageId: {
         oneOf: [{ type: "null" }, BaseEntity.jsonSchema.properties.id],
       },
+      color: { type: "string", pattern: "^#[0-9a-fA-F]{6}$" },
     },
     required: BaseEntity.jsonSchema.required.concat([
       "pollId",
       "title",
       "priority",
+      "color",
     ]),
   };
 }

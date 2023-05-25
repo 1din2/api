@@ -7,6 +7,7 @@ import {
   FieldResolver,
   Root,
   Int,
+  Mutation,
 } from "type-graphql";
 import { ApiContext } from "../../../container/api-context";
 import { TypePoll } from "../types/poll-type";
@@ -15,9 +16,26 @@ import { TypePollOption } from "../types/poll-option-type";
 import { Poll, PollStatus } from "../../../domain/poll/entity/poll";
 import { InvalidInputError } from "../../../domain/base/errors";
 import { UserRole } from "../../../domain/user/entity/user";
+import { CreatePollInput } from "../../../domain/poll/usecase/create-poll-usecase";
+import { InputCreatePoll } from "./inputs/create-poll-input";
+import { checkUserRole } from "../../auth";
 
 @Resolver(() => TypePoll)
 export default class PollResolver {
+  @Mutation(() => TypePoll, { description: "Create a poll" })
+  createPoll(
+    @Arg("input", () => InputCreatePoll) input: CreatePollInput,
+    @Ctx() context: ApiContext
+  ) {
+    return context.usecases.createPoll.execute(input, context);
+  }
+
+  @Mutation(() => TypePoll, { nullable: true, description: "Delete a poll" })
+  deletePoll(@Arg("id", () => ID) id: EntityId, @Ctx() context: ApiContext) {
+    checkUserRole(context, UserRole.ADMIN);
+    return context.services.poll.deleteById(id);
+  }
+
   @Query(() => [TypePoll], { nullable: true, description: "Find polls" })
   findPollList(
     @Ctx() { services, currentUser, project }: ApiContext,
