@@ -14,11 +14,13 @@ import { TypePoll } from "../types/poll-type";
 import { EntityId } from "../../../domain/base/entity";
 import { TypePollOption } from "../types/poll-option-type";
 import { Poll, PollStatus } from "../../../domain/poll/entity/poll";
-import { InvalidInputError } from "../../../domain/base/errors";
+import { ForbiddenError, InvalidInputError } from "../../../domain/base/errors";
 import { UserRole } from "../../../domain/user/entity/user";
 import { CreatePollInput } from "../../../domain/poll/usecase/create-poll-usecase";
 import { InputCreatePoll } from "./inputs/create-poll-input";
 import { checkUserRole } from "../../auth";
+import { UpdatePollInput } from "../../../domain/poll/usecase/update-poll-usecase";
+import { InputUpdatePoll } from "./inputs/update-poll-input";
 
 @Resolver(() => TypePoll)
 export default class PollResolver {
@@ -28,6 +30,14 @@ export default class PollResolver {
     @Ctx() context: ApiContext
   ) {
     return context.usecases.createPoll.execute(input, context);
+  }
+
+  @Mutation(() => TypePoll, { description: "Update a poll" })
+  updatePoll(
+    @Arg("input", () => InputUpdatePoll) input: UpdatePollInput,
+    @Ctx() context: ApiContext
+  ) {
+    return context.usecases.updatePoll.execute(input, context);
   }
 
   @Mutation(() => TypePoll, { nullable: true, description: "Delete a poll" })
@@ -50,11 +60,11 @@ export default class PollResolver {
       throw new InvalidInputError("Offset must be greater than 0");
 
     if (offset) {
-      if (!currentUser && offset > 2)
-        throw new InvalidInputError("Offset must be between 0 and 2");
+      if (!currentUser && offset > 1)
+        throw new ForbiddenError("Offset must be between 0 and 2");
 
-      if (currentUser && currentUser.role === UserRole.USER && offset > 3)
-        throw new InvalidInputError("Offset must be between 0 and 3");
+      if (currentUser && currentUser.role === UserRole.USER && offset > 1)
+        throw new ForbiddenError("Offset must be between 0 and 2");
     }
 
     return services.poll.find({ project, limit, offset, status });
@@ -67,7 +77,7 @@ export default class PollResolver {
 
   @Query(() => TypePoll, { nullable: true, description: "Get poll by slug" })
   pollBySlug(
-    @Arg("slug", () => ID) slug: EntityId,
+    @Arg("slug", () => String) slug: EntityId,
     @Ctx() { services, project }: ApiContext
   ) {
     if (!project) throw new InvalidInputError("Project is required");

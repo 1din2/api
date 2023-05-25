@@ -88,7 +88,7 @@ export abstract class DbRepository<
     const updateData = rest as any;
 
     delete updateData["createdAt"];
-    delete updateData["updatedAt"];
+    updateData["updatedAt"] = updateData["updatedAt"] || new Date().getTime();
 
     if (Object.keys(updateData).length === 0)
       throw new ValidationError(`Update data is empty!`, { data });

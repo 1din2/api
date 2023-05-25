@@ -2,7 +2,7 @@ import { pick } from "ramda";
 import { InvalidInputError } from "../../base/errors";
 import { RequiredJSONSchema } from "../../base/json-schema";
 import { dateAddDays, slugify } from "../../base/util";
-import { User, UserRole } from "../../user/entity/user";
+import { UserRole } from "../../user/entity/user";
 import {
   AuthDomainContext,
   AuthUseCase,
@@ -69,11 +69,11 @@ export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
           "maxSelect",
           "minSelect",
           "type",
+          "slug",
+          "endsAt",
         ],
-        User.jsonSchema.properties
+        Poll.jsonSchema.properties
       ),
-      slug: { oneOf: [Poll.jsonSchema.properties.slug, { type: "null" }] },
-      endsAt: { oneOf: [Poll.jsonSchema.properties.endsAt, { type: "null" }] },
     },
     required: ["title", "language", "type", "maxSelect", "minSelect"],
     additionalProperties: false,
