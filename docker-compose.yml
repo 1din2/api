@@ -13,7 +13,7 @@ services:
       - ${WEB_DEBUG_PORT:-9222}:9222 # Debugging port
     environment:
       REDISCLOUD_URL: redis://1of2_cache
-      DATABASE_URL: postgres://1of2:1of2@1of2_db:5432/1of2
+      DATABASE_URL: postgres://1of2@db:5432/1of2
 
     volumes:
       - .:/usr/src/app

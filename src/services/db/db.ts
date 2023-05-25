@@ -7,8 +7,8 @@ const parseDate = (value: string) => {
 };
 
 // Parse bigint values from Postgres to Int
-types.setTypeParser(types.builtins.INT8, value => parseInt(value, 10));
-types.setTypeParser(types.builtins.NUMERIC, value => parseFloat(value));
+types.setTypeParser(types.builtins.INT8, (value) => parseInt(value, 10));
+types.setTypeParser(types.builtins.NUMERIC, (value) => parseFloat(value));
 types.setTypeParser(types.builtins.DATE, parseDate);
 types.setTypeParser(types.builtins.TIMESTAMP, parseDate);
 types.setTypeParser(types.builtins.TIMESTAMPTZ, parseDate);

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request } from "express";
+import { Request, Response } from "express";
 import { ApiServices, getApiServices } from "./services";
 import { ApiContextInput, ApiUserData } from "./types";
 import { getRedisInstance } from "../services/db/redis";
@@ -27,19 +27,23 @@ const getDataFromInput = (input: ApiContextInput): ApiUserData => {
   };
 };
 
-export async function createApiContext(req: Request): Promise<ApiContext>;
+export async function createApiContext(input: {
+  req: Request;
+  res: Response;
+}): Promise<ApiContext>;
 export async function createApiContext(
   input: ApiContextInput
 ): Promise<ApiContext>;
 export async function createApiContext(): Promise<ApiContext>;
 
 export async function createApiContext(
-  input?: Request | ApiContextInput
+  input?: { req: Request; res: Response } | ApiContextInput
 ): Promise<ApiContext> {
   const redis = getRedisInstance();
   const cacheStorage: CacheStorage = new RedisCacheStorage(redis);
 
-  const req = (input as Request)?.headers ? (input as Request) : undefined;
+  const req = ((input as any)?.req as Request) || undefined;
+  const res = ((input as any)?.res as Response) || undefined;
   const inputData = input && !req ? (input as ApiContextInput) : undefined;
 
   const services = getApiServices(cacheStorage, inputData?.services);
@@ -47,7 +51,7 @@ export async function createApiContext(
   const currentUser = req ? await getCurrentUser(req, services.user) : null;
 
   const data = req
-    ? getHeadersData(req)
+    ? getHeadersData(req, res)
     : inputData
     ? getDataFromInput(inputData)
     : {
