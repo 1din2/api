@@ -83,7 +83,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("description");
     table.integer("priority").notNullable();
     table.string("pollId", 40).notNullable().references("Poll.id").index();
-    table.string("imageId", 40).references("Image.id").onDelete("SET NULL");
+    table.string("imageId", 40).notNullable().references("Image.id");
     table.string("color", 6).notNullable();
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
@@ -132,4 +132,6 @@ export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTable("Poll");
   await knex.schema.dropTable("PollOption");
   await knex.schema.dropTable("PollOptionVote");
+  await knex.schema.dropTable("Tag");
+  await knex.schema.dropTable("PollTag");
 }

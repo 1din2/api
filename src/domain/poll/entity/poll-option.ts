@@ -6,13 +6,14 @@ import {
   EntityUpdateData,
 } from "../../base/entity";
 import { RequiredJSONSchema } from "../../base/json-schema";
+import { Image } from "../../image/entity/image";
 
 export interface PollOptionData extends EntityData {
   pollId: EntityId;
   title: string;
   priority: number;
   description?: string;
-  imageId?: EntityId;
+  imageId: EntityId;
   color: string;
 }
 
@@ -55,9 +56,7 @@ export class PollOption
       title: { type: "string", minLength: 1, maxLength: 100 },
       priority: { type: "integer", minimum: 0, maximum: 100 },
       description: { type: ["null", "string"], minLength: 10, maxLength: 200 },
-      imageId: {
-        oneOf: [{ type: "null" }, BaseEntity.jsonSchema.properties.id],
-      },
+      imageId: Image.jsonSchema.properties.id,
       color: { type: "string", pattern: "^#[0-9a-fA-F]{6}$" },
     },
     required: BaseEntity.jsonSchema.required.concat([
@@ -65,6 +64,7 @@ export class PollOption
       "title",
       "priority",
       "color",
+      "imageId",
     ]),
   };
 }

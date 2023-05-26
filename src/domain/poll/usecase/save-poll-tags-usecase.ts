@@ -34,7 +34,12 @@ export class SavePollTagsUseCase extends AuthUseCase<
     const { language } = await this.pollService.checkById(input.pollId);
     const output: PollTag[] = [];
     const existingTags = await this.pollTagService.findByPollId(input.pollId);
+
     for (const data of input.data) {
+      const optionExistingTags = existingTags.filter(
+        (it) => it.pollOptionId || null === data.pollOptionId || null
+      );
+
       const tags = await this.tagService.findOrCreateMany(
         data.tags.map<TagCreateData>((t) => ({
           name: t.name,
@@ -53,15 +58,15 @@ export class SavePollTagsUseCase extends AuthUseCase<
         }))
       );
 
+      const oldTags = optionExistingTags.filter(
+        (it) => !pollTags.find((t) => t.id === it.id)
+      );
+
+      if (oldTags.length > 0)
+        await this.pollTagService.deleteByIds(oldTags.map((it) => it.id));
+
       output.push(...pollTags);
     }
-
-    const oldTags = existingTags.filter(
-      (it) => !output.find((t) => t.id === it.id)
-    );
-
-    if (oldTags.length > 0)
-      await this.pollTagService.deleteByIds(oldTags.map((it) => it.id));
 
     return output;
   }

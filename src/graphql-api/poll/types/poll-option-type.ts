@@ -12,7 +12,7 @@ export class TypePollOption extends TypeBaseEntity implements PollOptionData {
   priority!: number;
 
   @Field(() => ID, { nullable: true })
-  imageId?: EntityId;
+  imageId!: EntityId;
 
   @Field(() => ID)
   pollId!: EntityId;
