@@ -1,4 +1,3 @@
-import { JsonValidator } from "../../domain/base/validator";
 import {
   PollOptionVote,
   PollOptionVoteCreateData,
@@ -17,13 +16,7 @@ export class PollOptionVoteDbService
   implements PollOptionVoteService
 {
   constructor() {
-    super("PollOptionVote", {
-      createValidator: new JsonValidator(PollOptionVote.jsonSchema),
-      updateValidator: new JsonValidator({
-        ...PollOptionVote.jsonSchema,
-        required: ["id"],
-      }),
-    });
+    super(PollOptionVote);
   }
 
   async find({

@@ -15,6 +15,8 @@ import {
   PollType,
 } from "../entity/poll";
 import { PollService } from "../service/poll-service";
+import { Tag } from "../entity/tag";
+import { SavePollTagsUseCase } from "./save-poll-tags-usecase";
 
 export type CreatePollInput = Pick<
   PollData,
@@ -26,17 +28,21 @@ export type CreatePollInput = Pick<
   | "minSelect"
   | "type"
 > &
-  Partial<Pick<PollData, "slug" | "endsAt">>;
+  Partial<Pick<PollData, "slug" | "endsAt">> & { tags?: string[] };
 
 export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
-  constructor(private pollService: PollService) {
+  constructor(
+    private pollService: PollService,
+    private saveTags: SavePollTagsUseCase
+  ) {
     super(UserRole.ADMIN);
   }
 
   protected override async innerExecute(
     input: CreatePollInput,
-    { currentUser, project }: AuthDomainContext
+    context: AuthDomainContext
   ): Promise<Poll> {
+    const { currentUser, project } = context;
     if (!project) throw new InvalidInputError("Invalid project");
 
     const slug = slugify(input.slug || input.title);
@@ -54,7 +60,18 @@ export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
       status: PollStatus.DRAFT,
     };
 
-    return this.pollService.create(createData);
+    const poll = await this.pollService.create(createData);
+
+    if (input.tags)
+      await this.saveTags.execute(
+        {
+          pollId: poll.id,
+          data: [{ tags: input.tags.map((name) => ({ name })) }],
+        },
+        context
+      );
+
+    return poll;
   }
 
   public static override jsonSchema: RequiredJSONSchema = {
@@ -74,6 +91,13 @@ export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
         ],
         Poll.jsonSchema.properties
       ),
+      tags: {
+        type: "array",
+        items: Tag.jsonSchema.properties.name,
+        uniqueItems: true,
+        minItems: 0,
+        maxItems: 5,
+      },
     },
     required: ["title", "language", "type", "maxSelect", "minSelect"],
     additionalProperties: false,

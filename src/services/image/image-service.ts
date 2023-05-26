@@ -1,5 +1,4 @@
 import { EntityId } from "../../domain/base/entity";
-import { JsonValidator } from "../../domain/base/validator";
 import {
   Image,
   ImageCreateData,
@@ -16,13 +15,7 @@ export class ImageDbService
   implements ImageService
 {
   constructor() {
-    super("Image", {
-      createValidator: new JsonValidator(Image.jsonSchema),
-      updateValidator: new JsonValidator({
-        ...Image.jsonSchema,
-        required: ["id"],
-      }),
-    });
+    super(Image);
   }
 
   override toEntity(data: ImageData): Image {

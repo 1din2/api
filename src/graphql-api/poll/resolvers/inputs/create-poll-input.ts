@@ -31,4 +31,7 @@ export class InputCreatePoll implements CreatePollInput {
 
   @Field(() => PollType)
   type!: PollType;
+
+  @Field(() => [String], { nullable: true })
+  tags?: string[];
 }

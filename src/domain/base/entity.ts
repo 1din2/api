@@ -131,7 +131,14 @@ export class BaseEntity<TData extends EntityData = EntityData>
 
     return json;
   }
+
+  public static tableName() {
+    return this.name;
+  }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface EntityConstructor<E extends Entity> extends Constructor<E> {}
+export interface EntityConstructor<D extends EntityData, E extends Entity<D>>
+  extends Constructor<E, D> {
+  readonly jsonSchema: RequiredJSONSchema;
+  tableName(): string;
+}

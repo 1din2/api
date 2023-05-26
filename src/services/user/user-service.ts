@@ -1,4 +1,3 @@
-import { JsonValidator } from "../../domain/base/validator";
 import { User, UserCreateData, UserData } from "../../domain/user/entity/user";
 import { UserService } from "../../domain/user/service/user-service";
 import { DbRepository } from "../db/repository";
@@ -8,13 +7,7 @@ export class UserDbService
   implements UserService
 {
   constructor() {
-    super("User", {
-      createValidator: new JsonValidator(User.jsonSchema),
-      updateValidator: new JsonValidator({
-        ...User.jsonSchema,
-        required: ["id"],
-      }),
-    });
+    super(User);
   }
   async findByEmail(email: string): Promise<User | null> {
     const model = await this.query().where({ email }).first();

@@ -56,6 +56,8 @@ export interface Repository<
    */
   findOrCreate(data: TCreate, tx?: unknown): Promise<TEntity>;
 
+  findOrCreateMany(data: TCreate[], tx?: unknown): Promise<TEntity[]>;
+
   /**
    * Update an existing entity.
    * @param data Entity update data
@@ -245,6 +247,14 @@ export abstract class BaseRepository<
   public abstract findById(id: EntityId): Promise<TEntity | null>;
   public abstract findByIds(ids: EntityId[]): Promise<TEntity[]>;
   public abstract findOrCreate(data: TCreate, trx?: unknown): Promise<TEntity>;
+  async findOrCreateMany(data: TCreate[], tx?: unknown): Promise<TEntity[]> {
+    const output: TEntity[] = [];
+    for (const item of data) {
+      output.push(await this.findOrCreate(item, tx));
+    }
+    return output;
+  }
+
   public abstract createOrUpdate(
     data: TCreate,
     trx?: unknown

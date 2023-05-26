@@ -28,4 +28,7 @@ export class InputUpdatePoll implements UpdatePollInput {
 
   @Field(() => BigIntType, { nullable: true })
   endsAt?: number;
+
+  @Field(() => [String], { nullable: true })
+  tags?: string[];
 }

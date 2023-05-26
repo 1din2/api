@@ -1,5 +1,4 @@
 import { EntityCreateData } from "../../domain/base/entity";
-import { JsonValidator } from "../../domain/base/validator";
 import { Poll, PollData } from "../../domain/poll/entity/poll";
 import {
   FindPollBySlugParams,
@@ -13,13 +12,7 @@ export class PollDbService
   implements PollService
 {
   constructor() {
-    super("Poll", {
-      createValidator: new JsonValidator(Poll.jsonSchema),
-      updateValidator: new JsonValidator({
-        ...Poll.jsonSchema,
-        required: ["id"],
-      }),
-    });
+    super(Poll);
   }
 
   async find({

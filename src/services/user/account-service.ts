@@ -1,4 +1,3 @@
-import { JsonValidator } from "../../domain/base/validator";
 import {
   Account,
   AccountCreateData,
@@ -13,13 +12,7 @@ export class AccountDbService
   implements AccountService
 {
   constructor() {
-    super("Account", {
-      createValidator: new JsonValidator(Account.jsonSchema),
-      updateValidator: new JsonValidator({
-        ...Account.jsonSchema,
-        required: ["id"],
-      }),
-    });
+    super(Account);
   }
 
   override toEntity(data: AccountData): Account {

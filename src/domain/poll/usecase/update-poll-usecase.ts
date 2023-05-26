@@ -2,10 +2,15 @@ import { pick } from "ramda";
 import { RequiredJSONSchema } from "../../base/json-schema";
 import { slugify } from "../../base/util";
 import { UserRole } from "../../user/entity/user";
-import { AuthUseCase } from "../../user/usecase/auth-usercase";
+import {
+  AuthDomainContext,
+  AuthUseCase,
+} from "../../user/usecase/auth-usercase";
 import { Poll, PollData, PollUpdateData } from "../entity/poll";
 import { PollService } from "../service/poll-service";
 import { EntityId } from "../../base/entity";
+import { Tag } from "../entity/tag";
+import { SavePollTagsUseCase } from "./save-poll-tags-usecase";
 
 export type UpdatePollInput = Partial<
   Pick<
@@ -18,21 +23,38 @@ export type UpdatePollInput = Partial<
     | "slug"
     | "endsAt"
   >
-> & { id: EntityId };
+> & { id: EntityId } & { tags?: string[] };
 
 export class UpdatePollUseCase extends AuthUseCase<UpdatePollInput, Poll> {
-  constructor(private pollService: PollService) {
+  constructor(
+    private pollService: PollService,
+    private saveTags: SavePollTagsUseCase
+  ) {
     super(UserRole.ADMIN);
   }
 
-  protected override async innerExecute(input: UpdatePollInput): Promise<Poll> {
+  protected override async innerExecute(
+    input: UpdatePollInput,
+    context: AuthDomainContext
+  ): Promise<Poll> {
     const updateData: PollUpdateData = {
       ...input,
     };
 
     if (updateData.slug) updateData.slug = slugify(updateData.slug);
 
-    return this.pollService.update(updateData);
+    const poll = await this.pollService.update(updateData);
+
+    if (input.tags)
+      await this.saveTags.execute(
+        {
+          pollId: poll.id,
+          data: [{ tags: input.tags.map((name) => ({ name })) }],
+        },
+        context
+      );
+
+    return poll;
   }
 
   public static override jsonSchema: RequiredJSONSchema = {
@@ -51,6 +73,13 @@ export class UpdatePollUseCase extends AuthUseCase<UpdatePollInput, Poll> {
         ],
         Poll.jsonSchema.properties
       ),
+      tags: {
+        type: "array",
+        items: Tag.jsonSchema.properties.name,
+        uniqueItems: true,
+        minItems: 0,
+        maxItems: 5,
+      },
     },
     required: ["id"],
     additionalProperties: false,

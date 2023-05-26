@@ -1,4 +1,3 @@
-import { JsonValidator } from "../../domain/base/validator";
 import { Voter, VoterData } from "../../domain/user/entity/voter";
 import {
   FindVoterParams,
@@ -11,13 +10,7 @@ export class VoterDbService
   implements VoterService
 {
   constructor() {
-    super("Voter", {
-      createValidator: new JsonValidator(Voter.jsonSchema),
-      updateValidator: new JsonValidator({
-        ...Voter.jsonSchema,
-        required: ["id"],
-      }),
-    });
+    super(Voter);
   }
 
   override toEntity(data: VoterData): Voter {

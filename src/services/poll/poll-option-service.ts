@@ -1,5 +1,4 @@
 import { EntityId } from "../../domain/base/entity";
-import { JsonValidator } from "../../domain/base/validator";
 import {
   PollOption,
   PollOptionData,
@@ -12,13 +11,7 @@ export class PollOptionDbService
   implements PollOptionService
 {
   constructor() {
-    super("PollOption", {
-      createValidator: new JsonValidator(PollOption.jsonSchema),
-      updateValidator: new JsonValidator({
-        ...PollOption.jsonSchema,
-        required: ["id"],
-      }),
-    });
+    super(PollOption);
   }
 
   override toEntity(data: PollOptionData) {

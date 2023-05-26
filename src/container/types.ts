@@ -4,6 +4,8 @@ import { ImageService } from "../domain/image/service/image-service";
 import { PollOptionService } from "../domain/poll/service/poll-option-service";
 import { PollOptionVoteService } from "../domain/poll/service/poll-option-vote-service";
 import { PollService } from "../domain/poll/service/poll-service";
+import { PollTagService } from "../domain/poll/service/poll-tag-service";
+import { TagService } from "../domain/poll/service/tag-service";
 import { AccountService } from "../domain/user/service/account-service";
 import { UserService } from "../domain/user/service/user-service";
 import { VoterService } from "../domain/user/service/voter-service";
@@ -17,6 +19,8 @@ export type ApiServicesInput = {
   pollOption?: PollOptionService;
   pollOptionVote?: PollOptionVoteService;
   voter?: VoterService;
+  tag?: TagService;
+  pollTag?: PollTagService;
 };
 
 export type ApiUserData = Pick<

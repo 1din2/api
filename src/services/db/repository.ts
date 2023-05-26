@@ -4,6 +4,7 @@ import {
   EntityCreateData,
   EntityUpdateData,
   BaseEntity,
+  EntityConstructor,
 } from "../../domain/base/entity";
 import {
   RepositoryEvents,
@@ -13,6 +14,7 @@ import {
 import { NotFoundError, ValidationError } from "../../domain/base/errors";
 import { dbInstance } from "./db";
 import { Transaction } from "knex";
+import { JsonValidator } from "../../domain/base/validator";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DbRepositoryOptions<
@@ -29,19 +31,27 @@ export abstract class DbRepository<
   Events extends RepositoryEvents<TData, TEntity> = RepositoryEvents<
     TData,
     TEntity
-  >,
-  TOptions extends DbRepositoryOptions<
-    TData,
-    TCreate,
-    TUpdate
-  > = DbRepositoryOptions<TData, TCreate, TUpdate>
-> extends BaseRepository<TData, TEntity, TCreate, TUpdate, Events, TOptions> {
-  constructor(private tableName: string, options: TOptions) {
-    super(options);
+  >
+> extends BaseRepository<TData, TEntity, TCreate, TUpdate, Events> {
+  protected readonly knex = dbInstance();
+  private tableName: string;
+  constructor(
+    private entityBuilder: EntityConstructor<TData, TEntity>,
+    tableName?: string
+  ) {
+    super({
+      createValidator: new JsonValidator(entityBuilder.jsonSchema),
+      updateValidator: new JsonValidator({
+        ...entityBuilder.jsonSchema,
+        required: ["id"],
+      }),
+    });
+
+    this.tableName = tableName || entityBuilder.tableName();
   }
 
   protected query(trx?: Transaction) {
-    const query = dbInstance()(this.tableName);
+    const query = this.knex(this.tableName);
     return trx ? query.transacting(trx) : query;
   }
 
@@ -49,8 +59,12 @@ export abstract class DbRepository<
     return this.tableName;
   }
 
+  override toEntity(data: TData): TEntity {
+    return new this.entityBuilder(data);
+  }
+
   async transaction<T>(scope: (trx: unknown) => Promise<T> | void) {
-    return dbInstance().transaction<T>(scope);
+    return this.knex.transaction<T>(scope);
   }
 
   async deleteByIds(ids: EntityId[], trx?: Transaction): Promise<number> {

@@ -1,4 +1,5 @@
 import { CreatePollUseCase } from "../domain/poll/usecase/create-poll-usecase";
+import { SavePollTagsUseCase } from "../domain/poll/usecase/save-poll-tags-usecase";
 import { UpdatePollUseCase } from "../domain/poll/usecase/update-poll-usecase";
 import { VotePollUseCase } from "../domain/poll/usecase/vote-poll-usecase";
 import { ProviderLoginUseCase } from "../domain/user/usecase/provider-login-usecase";
@@ -9,6 +10,7 @@ export interface ApiUsecases {
   votePoll: VotePollUseCase;
   createPoll: CreatePollUseCase;
   updatePoll: UpdatePollUseCase;
+  savePollTags: SavePollTagsUseCase;
 }
 
 let instance: ApiUsecases;
@@ -25,14 +27,21 @@ const create = (services: ApiServices) => {
     services.pollOptionVote
   );
 
-  const createPoll = new CreatePollUseCase(services.poll);
-  const updatePoll = new UpdatePollUseCase(services.poll);
+  const savePollTags = new SavePollTagsUseCase(
+    services.poll,
+    services.tag,
+    services.pollTag
+  );
+
+  const createPoll = new CreatePollUseCase(services.poll, savePollTags);
+  const updatePoll = new UpdatePollUseCase(services.poll, savePollTags);
 
   const usecases: ApiUsecases = {
     providerLogin,
     votePoll,
     createPoll,
     updatePoll,
+    savePollTags,
   };
 
   return usecases;

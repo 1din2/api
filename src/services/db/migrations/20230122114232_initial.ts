@@ -100,6 +100,29 @@ export async function up(knex: Knex): Promise<void> {
 
     table.unique(["userId", "pollOptionId"]);
   });
+
+  await knex.schema.createTable("Tag", (table) => {
+    table.string("id", 40).notNullable().primary();
+    table.string("name", 50).notNullable();
+    table.string("slug", 50).notNullable();
+    table.string("description");
+    table.string("language", 2).notNullable();
+    table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
+    table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
+
+    table.unique(["language", "slug"]);
+  });
+
+  await knex.schema.createTable("PollTag", (table) => {
+    table.string("id", 40).notNullable().primary();
+    table.string("pollId", 40).notNullable().references("Poll.id").index();
+    table.string("tagId", 40).notNullable().references("Tag.id").index();
+    table.string("pollOptionId", 40).references("Poll.id").index();
+    table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
+    table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
+
+    table.unique(["pollId", "tagId"]);
+  });
 }
 
 export async function down(knex: Knex): Promise<void> {
