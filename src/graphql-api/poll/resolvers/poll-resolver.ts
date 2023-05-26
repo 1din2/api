@@ -21,6 +21,7 @@ import { InputCreatePoll } from "./inputs/create-poll-input";
 import { checkUserRole } from "../../auth";
 import { UpdatePollInput } from "../../../domain/poll/usecase/update-poll-usecase";
 import { InputUpdatePoll } from "./inputs/update-poll-input";
+import { slugify } from "../../../domain/base/util";
 
 @Resolver(() => TypePoll)
 export default class PollResolver {
@@ -61,7 +62,9 @@ export default class PollResolver {
     @Ctx() { services, currentUser, project }: ApiContext,
     @Arg("limit", () => Int, { nullable: true }) limit?: number,
     @Arg("offset", () => Int, { nullable: true }) offset?: number,
-    @Arg("status", () => [PollStatus], { nullable: true }) status?: PollStatus[]
+    @Arg("status", () => [PollStatus], { nullable: true })
+    status?: PollStatus[],
+    @Arg("tag", () => String, { nullable: true }) tag?: string
   ) {
     if (limit && (limit > 50 || limit < 0))
       throw new InvalidInputError("Limit must be between 0 and 50");
@@ -77,7 +80,14 @@ export default class PollResolver {
         throw new ForbiddenError("Offset must be between 0 and 2");
     }
 
-    return services.poll.find({ project, limit, offset, status });
+    status =
+      currentUser && currentUser.role === UserRole.ADMIN
+        ? status
+        : [PollStatus.ACTIVE];
+
+    if (tag) tag = slugify(tag);
+
+    return services.poll.find({ project, limit, offset, status, tag });
   }
 
   @Query(() => TypePoll, { nullable: true, description: "Get poll by id" })

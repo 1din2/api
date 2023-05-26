@@ -11,6 +11,7 @@ export interface FindPollParams {
   offset?: number;
   project?: string;
   status?: PollStatus[];
+  tag?: string;
 }
 
 export interface PollService extends Repository<PollData, Poll> {

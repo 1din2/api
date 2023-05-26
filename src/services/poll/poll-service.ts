@@ -20,6 +20,7 @@ export class PollDbService
     offset,
     project,
     status,
+    tag,
   }: FindPollParams): Promise<Poll[]> {
     const query = this.query()
       .limit(limit || 10)
@@ -27,6 +28,14 @@ export class PollDbService
 
     if (project) query.where({ project });
     if (status) query.whereIn("status", status);
+    if (tag)
+      query.whereExists((builder) =>
+        builder
+          .from("PollTag")
+          .select(this.knex.raw(1))
+          .whereRaw(`"PollTag"."pollId" = "Poll".id`)
+          .where({ slug: tag })
+      );
 
     const items = await query.orderBy("id", "desc");
 
