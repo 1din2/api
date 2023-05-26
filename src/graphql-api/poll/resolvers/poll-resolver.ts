@@ -46,6 +46,16 @@ export default class PollResolver {
     return context.services.poll.deleteById(id);
   }
 
+  @Mutation(() => TypePoll, { description: "Set poll status" })
+  setPollStatus(
+    @Arg("id", () => ID) id: EntityId,
+    @Arg("status", () => PollStatus) status: PollStatus,
+    @Ctx() context: ApiContext
+  ) {
+    checkUserRole(context, UserRole.ADMIN);
+    return context.usecases.setPollStatus.execute({ id, status }, context);
+  }
+
   @Query(() => [TypePoll], { nullable: true, description: "Find polls" })
   findPollList(
     @Ctx() { services, currentUser, project }: ApiContext,
