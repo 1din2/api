@@ -23,6 +23,7 @@ import { UpdatePollInput } from "../../../domain/poll/usecase/update-poll-usecas
 import { InputUpdatePoll } from "./inputs/update-poll-input";
 import { slugify } from "../../../domain/base/util";
 import { TypeTag } from "../types/tag-type";
+import configuration from "../../../container/configuration";
 
 @Resolver(() => TypePoll)
 export default class PollResolver {
@@ -90,11 +91,12 @@ export default class PollResolver {
       if (currentUser && currentUser.role === UserRole.USER && offset > 1)
         throw new ForbiddenError("Offset must be between 0 and 2");
     }
-
-    status =
-      currentUser && currentUser.role === UserRole.ADMIN
-        ? status
-        : [PollStatus.ACTIVE];
+    if (configuration.isProduction) {
+      status =
+        currentUser && currentUser.role === UserRole.ADMIN
+          ? status
+          : [PollStatus.ACTIVE];
+    }
 
     if (tag) tag = slugify(tag);
 
