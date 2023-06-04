@@ -83,8 +83,8 @@ export async function up(knex: Knex): Promise<void> {
     table.string("description");
     table.integer("priority").notNullable();
     table.string("pollId", 40).notNullable().references("Poll.id").index();
-    table.string("imageId", 40).notNullable().references("Image.id");
-    table.string("color", 6).notNullable();
+    table.string("imageId", 40).nullable().references("Image.id");
+    table.string("color", 6).nullable();
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
   });
@@ -117,7 +117,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("id", 40).notNullable().primary();
     table.string("pollId", 40).notNullable().references("Poll.id").index();
     table.string("tagId", 40).notNullable().references("Tag.id").index();
-    table.string("pollOptionId", 40).references("Poll.id").index();
+    table.string("pollOptionId", 40).references("PollOption.id").index();
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
 

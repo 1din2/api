@@ -12,8 +12,8 @@ export type EntityId = string;
  */
 export interface EntityData {
   id: EntityId;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type EntityCreateData<T extends EntityData> = Omit<
@@ -111,16 +111,8 @@ export class BaseEntity<TData extends EntityData = EntityData>
     type: "object",
     properties: {
       id: { type: "string", pattern: "^[a-z0-9]{26}$" },
-      createdAt: {
-        type: "integer",
-        minimum: new Date(2023, 0, 1).getTime(),
-        maximum: new Date(new Date().getFullYear() + 1, 0, 1).getTime(),
-      },
-      updatedAt: {
-        type: "integer",
-        minimum: new Date(2023, 0, 1).getTime(),
-        maximum: new Date(new Date().getFullYear() + 1, 0, 1).getTime(),
-      },
+      createdAt: { type: "string", format: "date-time" },
+      updatedAt: { type: "string", format: "date-time" },
     },
     required: ["id"],
   };

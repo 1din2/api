@@ -55,6 +55,10 @@ export class User extends BaseEntity<UserData> implements UserData {
     return this.get("project");
   }
 
+  get email() {
+    return this.get("email");
+  }
+
   static override jsonSchema: RequiredJSONSchema = {
     type: "object",
     properties: {

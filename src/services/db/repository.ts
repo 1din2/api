@@ -102,7 +102,7 @@ export abstract class DbRepository<
     const updateData = rest as any;
 
     delete updateData["createdAt"];
-    updateData["updatedAt"] = updateData["updatedAt"] || new Date().getTime();
+    updateData["updatedAt"] = updateData["updatedAt"] || new Date().toISOString();
 
     if (Object.keys(updateData).length === 0)
       throw new ValidationError(`Update data is empty!`, { data });

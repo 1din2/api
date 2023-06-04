@@ -10,5 +10,6 @@ export type FindOneTagBySlugParams = {
 export interface TagService
   extends Repository<TagData, Tag, TagCreateData, TagUpdateData> {
   findByPollId(pollId: EntityId): Promise<Tag[]>;
+  findByPollOptionId(pollOptionId: EntityId): Promise<Tag[]>;
   findOneBySlug(params: FindOneTagBySlugParams): Promise<Tag | null>;
 }

@@ -14,12 +14,24 @@ export class TagDbService
     super(Tag);
   }
 
+  async findByPollOptionId(pollOptionId: string): Promise<Tag[]> {
+    const items = await this.query().whereExists((builder) =>
+      builder
+        .from("PollTag")
+        .select(this.knex.raw(1))
+        .whereRaw(`"PollTag"."tagId" = "Tag".id`)
+        .where({ pollOptionId })
+    );
+
+    return this.toEntities(items);
+  }
+
   async findByPollId(pollId: string): Promise<Tag[]> {
     const items = await this.query().whereExists((builder) =>
       builder
         .from("PollTag")
         .select(this.knex.raw(1))
-        .whereRaw("PollTag.tagId = Tag.id")
+        .whereRaw(`"PollTag"."tagId" = "Tag".id`)
         .where({ pollId })
     );
 

@@ -69,24 +69,29 @@ export class GeneratePollUseCase extends AuthUseCase<GeneratePollInput, Poll> {
       {
         language: input.language,
         title: data.title,
-        description: data.description,
+        description: data.description || null,
         tags,
       },
       context
     );
 
+    let priority = 0;
     for (const op of data.options) {
       const option = await this.saveOption.execute(
         {
           pollId: poll.id,
           title: op.title,
           tags: (op.tags || []).slice(0, 2),
-          description: op.description,
+          description: op.description || null,
+          priority: priority++,
         },
         context
       );
       await this.createWebImages({
-        text: option.title,
+        text:
+          option.title.length > 10
+            ? option.title
+            : option.description || option.title,
         pollId: poll.id,
         pollOptionId: option.id,
       });

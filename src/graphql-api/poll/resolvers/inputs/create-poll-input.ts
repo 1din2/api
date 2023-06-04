@@ -1,7 +1,6 @@
 import { Field, InputType, Int } from "type-graphql";
 import { CreatePollInput } from "../../../../domain/poll/usecase/create-poll-usecase";
 import { PollType } from "../../../../domain/poll/entity/poll";
-import { BigIntType } from "../../../base/types/big-int";
 
 @InputType("InputCreatePoll")
 export class InputCreatePoll implements CreatePollInput {
@@ -26,8 +25,8 @@ export class InputCreatePoll implements CreatePollInput {
   @Field({ nullable: true })
   slug?: string;
 
-  @Field(() => BigIntType, { nullable: true })
-  endsAt?: number;
+  @Field(() => String, { nullable: true })
+  endsAt?: string;
 
   @Field(() => PollType)
   type!: PollType;

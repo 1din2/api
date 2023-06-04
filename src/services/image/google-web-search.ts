@@ -63,12 +63,14 @@ export default async function (
   while ((regResult = reg.exec(html))) {
     const href = regResult[1];
     if (!href) continue;
+    const [url] = JSON.parse(`["${href}"]`);
+    if (url.length > 255) continue;
     const height = parseInt(regResult[2], 10);
     const width = parseInt(regResult[3], 10);
     if (height < minHeight || width < minWidth) continue;
 
-    if (INVALID_HOSTS.find((item) => href.includes(item))) continue;
-    list.push({ url: href, hostname: new URL(href).hostname, width, height });
+    if (INVALID_HOSTS.find((item) => url.includes(item))) continue;
+    list.push({ url, hostname: new URL(url).hostname, width, height });
 
     if (list.length >= limit) break;
   }

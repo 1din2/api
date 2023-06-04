@@ -10,6 +10,7 @@ import { SavePollTagsUseCase } from "./save-poll-tags-usecase";
 import { PollOption, PollOptionData } from "../entity/poll-option";
 import { PollOptionService } from "../service/poll-option-service";
 import { InvalidInputError } from "../../base/errors";
+import { isNumber } from "../../base/util";
 
 export type SavePollOptionInput = Partial<
   Pick<
@@ -40,9 +41,8 @@ export class SavePollOptionUseCase extends AuthUseCase<
     const id = PollOption.createId();
     if (!pollId) throw new InvalidInputError("pollId is required");
     if (!title) throw new InvalidInputError("title is required");
-    if (!color) throw new InvalidInputError("color is required");
-    if (!priority) throw new InvalidInputError("priority is required");
-    if (!imageId) throw new InvalidInputError("imageId is required");
+    if (!isNumber(priority))
+      throw new InvalidInputError("priority is required");
 
     return this.pollOptionService.create({
       id,
@@ -67,9 +67,10 @@ export class SavePollOptionUseCase extends AuthUseCase<
     if (!id) throw new InvalidInputError("id is required");
     if (pollId) throw new InvalidInputError("pollId can't be updated");
     if (!title) throw new InvalidInputError("title is required");
-    if (!color) throw new InvalidInputError("color is required");
-    if (!priority) throw new InvalidInputError("priority is required");
-    if (!imageId) throw new InvalidInputError("imageId is required");
+    if (color === null) throw new InvalidInputError("color is required");
+    if (!isNumber(priority))
+      throw new InvalidInputError("priority is required");
+    if (imageId === null) throw new InvalidInputError("imageId is required");
 
     return this.pollOptionService.update({
       id,
@@ -86,8 +87,8 @@ export class SavePollOptionUseCase extends AuthUseCase<
     context: AuthDomainContext
   ): Promise<PollOption> {
     const option = input.id
-      ? await this.create(input)
-      : await this.update(input);
+      ? await this.update(input)
+      : await this.create(input);
 
     if (input.tags)
       await this.saveTags.execute(

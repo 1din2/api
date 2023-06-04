@@ -83,9 +83,14 @@ export class SavePollTagsUseCase extends AuthUseCase<
             pollOptionId: { type: ["string", "null"] },
             tags: {
               type: "array",
-              items: Tag.jsonSchema.properties.name,
+              items: {
+                type: "object",
+                properties: {
+                  name: Tag.jsonSchema.properties.name,
+                },
+              },
               uniqueItems: true,
-              minItems: 1,
+              minItems: 0,
               maxItems: 5,
             },
           },

@@ -22,6 +22,7 @@ import { checkUserRole } from "../../auth";
 import { UpdatePollInput } from "../../../domain/poll/usecase/update-poll-usecase";
 import { InputUpdatePoll } from "./inputs/update-poll-input";
 import { slugify } from "../../../domain/base/util";
+import { TypeTag } from "../types/tag-type";
 
 @Resolver(() => TypePoll)
 export default class PollResolver {
@@ -122,5 +123,10 @@ export default class PollResolver {
   @FieldResolver(() => Int, { description: "Get votes count" })
   votesCount(@Root() root: Poll, @Ctx() { services }: ApiContext) {
     return services.pollOptionVote.countVotes({ pollId: root.id });
+  }
+
+  @FieldResolver(() => [TypeTag], { description: "Get poll tags" })
+  tags(@Root() root: Poll, @Ctx() { services }: ApiContext) {
+    return services.tag.findByPollId(root.id);
   }
 }

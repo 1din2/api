@@ -16,6 +16,7 @@ import { InputSavePollOption } from "./inputs/save-poll-option-input";
 import { SavePollOptionInput } from "../../../domain/poll/usecase/save-poll-option-usecase";
 import { TypeWebImage } from "../../image/types/type-web-image";
 import { TypePoll } from "../types/poll-type";
+import { TypeTag } from "../types/tag-type";
 
 @Resolver(() => TypePollOption)
 export default class PollOptionResolver {
@@ -43,5 +44,10 @@ export default class PollOptionResolver {
   @FieldResolver(() => [TypeWebImage], { description: "Get web images" })
   webImages(@Root() root: PollOption, @Ctx() { services }: ApiContext) {
     return services.webImage.find({ pollOptionId: root.id });
+  }
+
+  @FieldResolver(() => [TypeTag], { description: "Get poll option tags" })
+  tags(@Root() root: PollOption, @Ctx() { services }: ApiContext) {
+    return services.tag.findByPollOptionId(root.id);
   }
 }

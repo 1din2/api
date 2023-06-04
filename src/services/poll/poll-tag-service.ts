@@ -20,10 +20,11 @@ export class PollTagDbService
     return this.toEntities(items);
   }
 
-  async findOneByPollId(
-    params: FindOneByPollIdParams
-  ): Promise<PollTag | null> {
-    const item = await this.query().where(params).first();
+  async findOneByPollId({
+    pollId,
+    tagId,
+  }: FindOneByPollIdParams): Promise<PollTag | null> {
+    const item = await this.query().where({ pollId, tagId }).first();
 
     return item ? this.toEntity(item) : null;
   }

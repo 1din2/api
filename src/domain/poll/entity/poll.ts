@@ -6,7 +6,6 @@ import {
   EntityUpdateData,
 } from "../../base/entity";
 import { RequiredJSONSchema } from "../../base/json-schema";
-import { dateAddDays } from "../../base/util";
 
 export enum PollStatus {
   DRAFT = "DRAFT",
@@ -24,14 +23,14 @@ export interface PollData extends EntityData {
   status: PollStatus;
   title: string;
   slug: string;
-  description?: string;
+  description?: string | null;
   imageId?: EntityId;
   minSelect: number;
   maxSelect: number;
   language: string;
   project: string;
   type: PollType;
-  endsAt: number;
+  endsAt: string;
 }
 
 export type PollCreateData = EntityCreateData<PollData>;
@@ -94,7 +93,7 @@ export class Poll extends BaseEntity<PollData> implements PollData {
       status: { type: "string", enum: Object.values(PollStatus) },
       title: { type: "string", minLength: 10, maxLength: 200 },
       slug: { type: "string", minLength: 10, maxLength: 100 },
-      description: { type: ["null", "string"], minLength: 50, maxLength: 250 },
+      description: { type: ["null", "string"], minLength: 1, maxLength: 250 },
       imageId: {
         oneOf: [{ type: "null" }, BaseEntity.jsonSchema.properties.id],
       },
@@ -103,11 +102,7 @@ export class Poll extends BaseEntity<PollData> implements PollData {
       language: { type: "string", pattern: "^[a-z]{2}$" },
       project: { type: ["string"], pattern: "^[a-z0-9.]{2,10}$" },
       type: { type: "string", enum: Object.values(PollType) },
-      endsAt: {
-        type: "integer",
-        minimum: new Date().getTime(),
-        maximum: dateAddDays(100).getTime(),
-      },
+      endsAt: { type: "string", format: "date-time" },
     },
     required: BaseEntity.jsonSchema.required.concat([
       "userId",

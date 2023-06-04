@@ -20,9 +20,9 @@ const ext = (contentType: string) => {
 const formatKey = (
   id: string,
   contentType: string,
-  date = new Date().getTime()
+  date = new Date().toISOString()
 ) => {
-  const prefix = new Date(date).toISOString().substring(0, 7);
+  const prefix = date.substring(0, 7);
   return `${prefix}/images/${id}.${ext(contentType)}`;
 };
 

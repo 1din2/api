@@ -1,7 +1,6 @@
 import { createApiContext } from "../../../container/api-context";
 import configuration from "../../../container/configuration";
 import logger from "../../../domain/logger";
-import { AccountProvider } from "../../../domain/user/entity/account";
 import { UserRole } from "../../../domain/user/entity/user";
 
 export async function seed() {
@@ -11,14 +10,9 @@ export async function seed() {
   }
 
   const context = await createApiContext();
-  const account = await context.services.account.findByProviderId(
-    AccountProvider.GOOGLE,
+  const user = await context.services.user.findByEmail(
     configuration.admin_email
   );
-
-  const user = account
-    ? await context.services.user.findById(account.userId)
-    : null;
 
   if (!user) {
     logger.warn(`User with email=ADMIN_EMAIL not found`);

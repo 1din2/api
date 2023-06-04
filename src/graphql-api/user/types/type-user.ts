@@ -30,4 +30,7 @@ export class TypeUser
 
   @Field(() => Gender, { nullable: true })
   gender?: Gender;
+
+  @Field(() => String, { nullable: true })
+  email?: string;
 }

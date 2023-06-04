@@ -5,7 +5,6 @@ import {
   PollStatus,
   PollType,
 } from "../../../domain/poll/entity/poll";
-import { BigIntType } from "../../base/types/big-int";
 import { EntityId } from "../../../domain/base/entity";
 
 registerEnumType(PollStatus, { name: "PollStatus" });
@@ -28,8 +27,8 @@ export class TypePoll
   @Field(() => PollType)
   type!: PollType;
 
-  @Field(() => BigIntType)
-  endsAt!: number;
+  @Field(() => String)
+  endsAt!: string;
 
   @Field()
   slug!: string;

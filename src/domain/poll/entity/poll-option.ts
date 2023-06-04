@@ -12,9 +12,9 @@ export interface PollOptionData extends EntityData {
   pollId: EntityId;
   title: string;
   priority: number;
-  description?: string;
-  imageId: EntityId;
-  color: string;
+  description?: string | null;
+  imageId?: EntityId | null;
+  color?: string | null;
 }
 
 export type PollOptionCreateData = EntityCreateData<PollOptionData>;
@@ -55,16 +55,14 @@ export class PollOption
       pollId: BaseEntity.jsonSchema.properties.id,
       title: { type: "string", minLength: 1, maxLength: 100 },
       priority: { type: "integer", minimum: 0, maximum: 100 },
-      description: { type: ["null", "string"], minLength: 10, maxLength: 200 },
-      imageId: Image.jsonSchema.properties.id,
-      color: { type: "string", pattern: "^#[0-9a-fA-F]{6}$" },
+      description: { type: ["null", "string"], minLength: 1, maxLength: 200 },
+      imageId: { oneOf: [{ type: "null" }, Image.jsonSchema.properties.id] },
+      color: { type: ["string", "null"], pattern: "^#[0-9a-fA-F]{6}$" },
     },
     required: BaseEntity.jsonSchema.required.concat([
       "pollId",
       "title",
       "priority",
-      "color",
-      "imageId",
     ]),
   };
 }

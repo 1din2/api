@@ -10,7 +10,6 @@ import { CursorPageInfo } from "../../../domain/base/cursor-pagination";
 import { EntityData, EntityId } from "../../../domain/base/entity";
 import { BaseErrorCode } from "../../../domain/base/errors";
 import { UserErrorCode } from "../../../domain/user/errors";
-import { BigIntType } from "./big-int";
 
 export const AllErrorCodes = {
   ...BaseErrorCode,
@@ -24,11 +23,11 @@ export class TypeBaseEntity implements EntityData {
   @Field(() => ID)
   id!: EntityId;
 
-  @Field(() => BigIntType)
-  createdAt!: number;
+  @Field(() => String)
+  createdAt!: string;
 
-  @Field(() => BigIntType, { nullable: true })
-  updatedAt!: number;
+  @Field(() => String, { nullable: true })
+  updatedAt!: string;
 }
 
 @ObjectType("PageInfo")

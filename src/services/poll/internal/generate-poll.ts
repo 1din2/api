@@ -2,10 +2,12 @@ import { Configuration, OpenAIApi } from "openai";
 import {
   PollGenerateData,
   PollGenerateParams,
+  PollGenerateTextData,
 } from "../../../domain/poll/service/poll-service";
 import { readYaml } from "../../helpers";
 import { join } from "path";
 import { getRandomInt } from "../../../domain/base/util";
+import logger from "../../../domain/logger";
 
 const configuration = new Configuration({
   organization: process.env.OPENAI_ORG_ID,
@@ -32,5 +34,25 @@ export default async ({
     // stop: STOP
   });
 
-  return JSON.parse((response.data.choices[0].message?.content || "").trim());
+  const json: {
+    question: string;
+    answers: { title: string; description: string; tags: string[] }[];
+    description: string;
+    tags: string[];
+  } = JSON.parse((response.data.choices[0].message?.content || "").trim());
+
+  if (!json) throw new Error("PollGenerate: No data");
+  const data: PollGenerateData = {
+    title: json.question,
+    options: json.answers.map<PollGenerateTextData>((a) => ({ ...a })),
+    description: json.description,
+    tags: json.tags,
+    language,
+  };
+  if (!data.title) throw new Error("PollGenerate: No title");
+  if (data.options?.length !== 2) throw new Error("PollGenerate: No options");
+
+  logger.info(`PollGenerate:`, data);
+
+  return data;
 };

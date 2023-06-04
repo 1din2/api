@@ -39,17 +39,20 @@ export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
   }
 
   protected override async innerExecute(
-    input: CreatePollInput,
+    { tags, ...input }: CreatePollInput,
     context: AuthDomainContext
   ): Promise<Poll> {
     const { currentUser, project } = context;
     if (!project) throw new InvalidInputError("Invalid project");
 
     const slug = slugify(input.slug || input.title);
-    const endsAt = input.endsAt || dateAddDays(90).getTime();
+    const endsAt = input.endsAt || dateAddDays(90).toISOString();
     const type = input.type || PollType.SELECT;
     const maxSelect = input.maxSelect || 1;
     const minSelect = input.minSelect || 1;
+
+    const existing = await this.pollService.findBySlug({ project, slug });
+    if (existing) throw new InvalidInputError("Poll already exists");
 
     const createData: PollCreateData = {
       id: Poll.createId(),
@@ -66,11 +69,11 @@ export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
 
     const poll = await this.pollService.create(createData);
 
-    if (input.tags)
+    if (tags)
       await this.saveTags.execute(
         {
           pollId: poll.id,
-          data: [{ tags: input.tags.map((name) => ({ name })) }],
+          data: [{ tags: tags.map((name) => ({ name })) }],
         },
         context
       );

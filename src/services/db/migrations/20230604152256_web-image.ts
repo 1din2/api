@@ -16,7 +16,7 @@ export async function up(knex: Knex): Promise<void> {
       .inTable("Poll")
       .onDelete("SET NULL");
     table
-      .string("poll_option_id")
+      .string("pollOptionId")
       .nullable()
       .index()
       .references("id")

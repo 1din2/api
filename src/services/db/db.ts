@@ -3,7 +3,7 @@ import Knex from "knex";
 import configuration from "../../container/configuration";
 
 const parseDate = (value: string) => {
-  return value === null ? null : new Date(value).getTime();
+  return !value ? null : new Date(value).toISOString();
 };
 
 // Parse bigint values from Postgres to Int

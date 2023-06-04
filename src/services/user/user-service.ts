@@ -9,6 +9,7 @@ export class UserDbService
   constructor() {
     super(User);
   }
+
   async findByEmail(email: string): Promise<User | null> {
     const model = await this.query().where({ email }).first();
     return model ? this.toEntity(model) : null;
