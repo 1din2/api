@@ -57,6 +57,16 @@ export default class PollResolver {
     return context.usecases.setPollStatus.execute({ id, status }, context);
   }
 
+  @Mutation(() => TypePoll, { description: "Generate poll" })
+  generatePoll(
+    @Ctx() context: ApiContext,
+    @Arg("language", () => String) language: string,
+    @Arg("news", () => String, { nullable: true }) news?: string
+  ) {
+    checkUserRole(context, UserRole.ADMIN);
+    return context.usecases.generatePoll.execute({ language, news }, context);
+  }
+
   @Query(() => [TypePoll], { nullable: true, description: "Find polls" })
   findPollList(
     @Ctx() { services, currentUser, project }: ApiContext,

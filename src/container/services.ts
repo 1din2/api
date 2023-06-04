@@ -20,6 +20,8 @@ import { TagService } from "../domain/poll/service/tag-service";
 import { PollTagService } from "../domain/poll/service/poll-tag-service";
 import { PollTagDbService } from "../services/poll/poll-tag-service";
 import { TagDbService } from "../services/poll/tag-service";
+import { WebImageService } from "../domain/image/service/web-image-service";
+import { WebImageDbService } from "../services/image/web-image-service";
 
 export interface ApiServices {
   logger: Logger;
@@ -32,6 +34,7 @@ export interface ApiServices {
   voter: VoterService;
   tag: TagService;
   pollTag: PollTagService;
+  webImage: WebImageService;
 }
 
 let instance: ApiServices;
@@ -50,6 +53,7 @@ const createServices = (
   const voter = input?.voter ?? new VoterDbService();
   const tag = input?.tag ?? new TagDbService();
   const pollTag = input?.pollTag ?? new PollTagDbService();
+  const webImage = input?.webImage ?? new WebImageDbService();
 
   const services: ApiServices = {
     logger,
@@ -62,6 +66,7 @@ const createServices = (
     voter,
     tag,
     pollTag,
+    webImage,
   };
 
   return services;

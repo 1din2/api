@@ -14,7 +14,7 @@ export type S3ImageStorageConfig = {
 const ext = (contentType: string) => {
   const ext = contentType.toLowerCase().split("/")[1];
   if (!ext) throw new Error(`Invalid image content type ${contentType}`);
-  return ext === "jpeg" ? "jpg" : ext;
+  return ext;
 };
 
 const formatKey = (
@@ -23,11 +23,12 @@ const formatKey = (
   date = new Date().getTime()
 ) => {
   const prefix = new Date(date).toISOString().substring(0, 7);
-  return `${prefix}/${id}.${ext(contentType)}`;
+  return `${prefix}/images/${id}.${ext(contentType)}`;
 };
 
 export class S3ImageStorage implements ImageStorage {
   constructor(private s3: S3, private config: S3ImageStorageConfig) {}
+
   async delete({
     hash,
     id,

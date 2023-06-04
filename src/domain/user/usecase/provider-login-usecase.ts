@@ -5,6 +5,7 @@ import { UserService } from "../service/user-service";
 import { AccountService } from "../service/account-service";
 import { Account } from "../entity/account";
 import { InvalidInputError } from "../../base/errors";
+import generateJWT from "./helpers/generate-jwt";
 
 export interface ProviderLoginInput {
   // accessToken: string;
@@ -13,9 +14,14 @@ export interface ProviderLoginInput {
   // localUserId: string;
 }
 
+export interface ProviderLoginOutput {
+  token: string;
+  user: User;
+}
+
 export class ProviderLoginUseCase extends BaseUseCase<
   ProviderLoginInput,
-  User
+  ProviderLoginOutput
 > {
   constructor(
     private userService: UserService,
@@ -27,7 +33,7 @@ export class ProviderLoginUseCase extends BaseUseCase<
   protected override async innerExecute(
     { profile }: ProviderLoginInput,
     { project }: DomainContext
-  ): Promise<User> {
+  ) {
     if (!project) throw new InvalidInputError("Project is required");
 
     const provider = Account.toProvider(profile.provider);
@@ -37,14 +43,18 @@ export class ProviderLoginUseCase extends BaseUseCase<
       provider,
       providerId
     );
-    if (existingAccount)
-      return this.userService.checkById(existingAccount.userId);
+    if (existingAccount) {
+      return {
+        user: await this.userService.checkById(existingAccount.userId),
+        token: await generateJWT(existingAccount.userId),
+      };
+    }
 
     const email = profile.emails?.[0].value.trim().toLowerCase();
     let existingUser: User | null = null;
     if (email) existingUser = await this.userService.findByEmail(email);
 
-    return this.accountService.transaction<User>(async (trx) => {
+    return this.accountService.transaction<ProviderLoginOutput>(async (trx) => {
       if (!existingUser)
         existingUser = await this.userService.create(
           {
@@ -78,7 +88,7 @@ export class ProviderLoginUseCase extends BaseUseCase<
         trx
       );
 
-      return existingUser;
+      return { user: existingUser, token: await generateJWT(existingUser.id) };
     });
   }
 }

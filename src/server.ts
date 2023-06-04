@@ -6,6 +6,7 @@ import rateLimit from "./rate-limit";
 import passport from "passport";
 import configuration from "./container/configuration";
 import { clearIpProject } from "./container/helpers/get-headers-data";
+import { ProviderLoginOutput } from "./domain/user/usecase/provider-login-usecase";
 
 passport.use(
   "facebook",
@@ -18,7 +19,6 @@ passport.use(
       profileFields: ["email", "id", "displayName", "photos", "name"],
     } as never,
     function verify(req, _accessToken, _refreshToken, profile, done) {
-      console.log("profile", profile, req.query);
       const apiContext = req.apiContext;
       delete profile._json;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,7 +57,17 @@ export default () => {
     function (req, res) {
       clearIpProject(req.ip);
       console.log("user", req.user, req.query);
-      res.redirect("/");
+      const user = req.user ? (req.user as ProviderLoginOutput) : null;
+      const data = user
+        ? {
+            token: user.token,
+            user: { id: user.user.id, displayName: user.user.displayName },
+          }
+        : null;
+      res.send(`<h4>Closing...</h4>
+<script type="text/javascript">
+  (window.opener || window.parent).onLogin(JSON.parse(${JSON.stringify(data)}));
+</script>`);
     }
   );
 

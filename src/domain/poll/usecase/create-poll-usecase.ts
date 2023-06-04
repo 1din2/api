@@ -17,18 +17,18 @@ import {
 import { PollService } from "../service/poll-service";
 import { Tag } from "../entity/tag";
 import { SavePollTagsUseCase } from "./save-poll-tags-usecase";
+import { EntityId } from "../../base/entity";
 
 export type CreatePollInput = Pick<
   PollData,
-  | "title"
-  | "description"
-  | "imageId"
-  | "language"
-  | "maxSelect"
-  | "minSelect"
-  | "type"
+  "title" | "description" | "imageId" | "language"
 > &
-  Partial<Pick<PollData, "slug" | "endsAt">> & { tags?: string[] };
+  Partial<
+    Pick<PollData, "slug" | "endsAt" | "maxSelect" | "minSelect" | "type">
+  > & {
+    tags?: string[];
+    id?: EntityId;
+  };
 
 export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
   constructor(
@@ -48,16 +48,20 @@ export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
     const slug = slugify(input.slug || input.title);
     const endsAt = input.endsAt || dateAddDays(90).getTime();
     const type = input.type || PollType.SELECT;
+    const maxSelect = input.maxSelect || 1;
+    const minSelect = input.minSelect || 1;
 
     const createData: PollCreateData = {
+      id: Poll.createId(),
       ...input,
       slug,
       endsAt,
       project,
       userId: currentUser.id,
       type,
-      id: Poll.createId(),
       status: PollStatus.DRAFT,
+      maxSelect,
+      minSelect,
     };
 
     const poll = await this.pollService.create(createData);
@@ -79,6 +83,7 @@ export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
     properties: {
       ...pick(
         [
+          "id",
           "title",
           "description",
           "imageId",
@@ -99,7 +104,7 @@ export class CreatePollUseCase extends AuthUseCase<CreatePollInput, Poll> {
         maxItems: 5,
       },
     },
-    required: ["title", "language", "type", "maxSelect", "minSelect"],
+    required: ["title", "language"],
     additionalProperties: false,
   };
 }

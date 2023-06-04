@@ -10,6 +10,7 @@ import { Image, ImageData } from "../entity/image";
 import { ImageService } from "../service/image-service";
 import { ImageMetadataService } from "../service/image-metadata-service";
 import { ImageStorage } from "../service/image-storage";
+import { UserRole } from "../../user/entity/user";
 
 export interface UploadImageInput {
   filename: string;
@@ -18,7 +19,7 @@ export interface UploadImageInput {
   stream: ReadStream;
 }
 
-export class UploadImageUsecase extends AuthUseCase<
+export class UploadImageUseCase extends AuthUseCase<
   UploadImageInput,
   ImageData
 > {
@@ -27,7 +28,7 @@ export class UploadImageUsecase extends AuthUseCase<
     private metadataService: ImageMetadataService,
     private imageStorage: ImageStorage
   ) {
-    super();
+    super(UserRole.ADMIN);
   }
 
   protected async innerExecute(
@@ -41,18 +42,20 @@ export class UploadImageUsecase extends AuthUseCase<
       logger.info(`Found image duplication`, info);
       return exists;
     }
+
+    exists = await this.imageRep.findUniqueByHash(info);
+    if (exists) {
+      logger.warn(`Found image duplication after upload`, info, exists.url);
+      return exists;
+    }
+
     const id = Image.createId();
+
     const { url, provider } = await this.imageStorage.save({
       streamBuffer: buffer,
       id,
       contentType,
     });
-
-    exists = await this.imageRep.findUniqueByHash(info);
-    if (exists) {
-      logger.warn(`Found image duplication after upload`, info, url);
-      return exists;
-    }
 
     return this.imageRep.create({
       id,
@@ -69,7 +72,7 @@ export class UploadImageUsecase extends AuthUseCase<
     type: "object",
     properties: {
       mimetype: { type: "string", pattern: "^image/(jpeg|png|webp)$" },
-      filename: { type: "string", minLength: 1 },
+      filename: { type: "string", minLength: 5, maxLength: 100 },
       encoding: { type: "string" },
       stream: { type: "object" },
     },

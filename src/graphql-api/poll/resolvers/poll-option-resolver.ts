@@ -14,6 +14,8 @@ import { PollOption } from "../../../domain/poll/entity/poll-option";
 import { EntityId } from "../../../domain/base/entity";
 import { InputSavePollOption } from "./inputs/save-poll-option-input";
 import { SavePollOptionInput } from "../../../domain/poll/usecase/save-poll-option-usecase";
+import { TypeWebImage } from "../../image/types/type-web-image";
+import { TypePoll } from "../types/poll-type";
 
 @Resolver(() => TypePollOption)
 export default class PollOptionResolver {
@@ -30,11 +32,16 @@ export default class PollOptionResolver {
     return services.pollOptionVote.countVotes({ pollOptionId: root.id });
   }
 
-  @Mutation(() => [TypePollOption], { description: "Vote for poll options" })
-  voteOptions(
+  @Mutation(() => TypePoll, { description: "Vote for poll options" })
+  vote(
     @Arg("pollOptionIds", () => [ID]) pollOptionIds: EntityId[],
     @Ctx() context: ApiContext
   ) {
     return context.usecases.votePoll.execute({ pollOptionIds }, context);
+  }
+
+  @FieldResolver(() => [TypeWebImage], { description: "Get web images" })
+  webImages(@Root() root: PollOption, @Ctx() { services }: ApiContext) {
+    return services.webImage.find({ pollOptionId: root.id });
   }
 }

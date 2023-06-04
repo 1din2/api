@@ -1,6 +1,7 @@
 import { Logger } from "../domain/base/logger";
 import { DomainContext } from "../domain/base/usecase";
 import { ImageService } from "../domain/image/service/image-service";
+import { WebImageService } from "../domain/image/service/web-image-service";
 import { PollOptionService } from "../domain/poll/service/poll-option-service";
 import { PollOptionVoteService } from "../domain/poll/service/poll-option-vote-service";
 import { PollService } from "../domain/poll/service/poll-service";
@@ -21,6 +22,7 @@ export type ApiServicesInput = {
   voter?: VoterService;
   tag?: TagService;
   pollTag?: PollTagService;
+  webImage?: WebImageService;
 };
 
 export type ApiUserData = Pick<

@@ -1,8 +1,12 @@
 import { ulid } from "ulid";
 import slugFn from "slug";
+import crypto from "crypto";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const atonic = require("atonic");
+
+export const md5 = (input: string) =>
+  crypto.createHash("md5").update(input).digest("hex").toLowerCase();
 
 export const removeDiacritics = (str: string): string => atonic(str);
 

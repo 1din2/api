@@ -1,4 +1,5 @@
 import { CreatePollUseCase } from "../domain/poll/usecase/create-poll-usecase";
+import { GeneratePollUseCase } from "../domain/poll/usecase/generate-poll-usecase";
 import { SavePollOptionUseCase } from "../domain/poll/usecase/save-poll-option-usecase";
 import { SavePollTagsUseCase } from "../domain/poll/usecase/save-poll-tags-usecase";
 import { SetPollStatusUseCase } from "../domain/poll/usecase/set-poll-status-usecase";
@@ -15,6 +16,7 @@ export interface ApiUsecases {
   savePollTags: SavePollTagsUseCase;
   savePollOption: SavePollOptionUseCase;
   setPollStatus: SetPollStatusUseCase;
+  generatePoll: GeneratePollUseCase;
 }
 
 let instance: ApiUsecases;
@@ -47,6 +49,12 @@ const create = (services: ApiServices) => {
     services.poll,
     services.pollOption
   );
+  const generatePoll = new GeneratePollUseCase(
+    createPoll,
+    savePollOption,
+    services.poll,
+    services.webImage
+  );
 
   const usecases: ApiUsecases = {
     providerLogin,
@@ -56,6 +64,7 @@ const create = (services: ApiServices) => {
     savePollTags,
     savePollOption,
     setPollStatus,
+    generatePoll,
   };
 
   return usecases;

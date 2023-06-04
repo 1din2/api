@@ -3,9 +3,11 @@ import { Poll, PollData } from "../../domain/poll/entity/poll";
 import {
   FindPollBySlugParams,
   FindPollParams,
+  PollGenerateParams,
   PollService,
 } from "../../domain/poll/service/poll-service";
 import { DbRepository } from "../db/repository";
+import generatePoll from "./internal/generate-poll";
 
 export class PollDbService
   extends DbRepository<PollData, Poll>
@@ -13,6 +15,10 @@ export class PollDbService
 {
   constructor() {
     super(Poll);
+  }
+
+  generatePoll(params: PollGenerateParams) {
+    return generatePoll(params);
   }
 
   async find({

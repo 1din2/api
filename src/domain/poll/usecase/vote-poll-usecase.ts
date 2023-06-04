@@ -6,6 +6,7 @@ import {
   AuthDomainContext,
   AuthUseCase,
 } from "../../user/usecase/auth-usercase";
+import { Poll } from "../entity/poll";
 import { PollOption } from "../entity/poll-option";
 import {
   PollOptionVote,
@@ -19,7 +20,7 @@ export interface VotePollInput {
   pollOptionIds: EntityId[];
 }
 
-export class VotePollUseCase extends AuthUseCase<VotePollInput, PollOption[]> {
+export class VotePollUseCase extends AuthUseCase<VotePollInput, Poll> {
   constructor(
     private pollService: PollService,
     private pollOptionService: PollOptionService,
@@ -31,7 +32,7 @@ export class VotePollUseCase extends AuthUseCase<VotePollInput, PollOption[]> {
   protected override async innerExecute(
     { pollOptionIds }: VotePollInput,
     { currentUser, ip }: AuthDomainContext
-  ): Promise<PollOption[]> {
+  ) {
     const pollOptions = await this.pollOptionService.findByIds(pollOptionIds);
     const pollIds = uniq(pollOptions.map((po) => po.pollId));
     if (pollOptions.length !== pollOptionIds.length || pollIds.length !== 1)
@@ -72,7 +73,7 @@ export class VotePollUseCase extends AuthUseCase<VotePollInput, PollOption[]> {
       );
     });
 
-    return pollOptions;
+    return poll;
   }
 
   public static override jsonSchema: RequiredJSONSchema = {

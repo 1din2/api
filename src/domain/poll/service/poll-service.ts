@@ -14,7 +14,24 @@ export interface FindPollParams {
   tag?: string;
 }
 
+export interface PollGenerateParams {
+  language: string;
+  news?: string;
+}
+
+export interface PollGenerateTextData {
+  title: string;
+  description?: string;
+  tags?: string[];
+}
+
+export interface PollGenerateData extends PollGenerateTextData {
+  language: string;
+  options: PollGenerateTextData[];
+}
+
 export interface PollService extends Repository<PollData, Poll> {
   findBySlug(params: FindPollBySlugParams): Promise<Poll | null>;
   find(params: FindPollParams): Promise<Poll[]>;
+  generatePoll(params: PollGenerateParams): Promise<PollGenerateData>;
 }
