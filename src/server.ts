@@ -56,7 +56,6 @@ export default () => {
     passport.authenticate("facebook", { session: false }),
     function (req, res) {
       clearIpProject(req.ip);
-      console.log("user", req.user, req.query);
       const user = req.user ? (req.user as ProviderLoginOutput) : null;
       const data = user
         ? {
@@ -66,7 +65,7 @@ export default () => {
         : null;
       res.send(`<h4>Closing...</h4>
 <script type="text/javascript">
-  (window.opener || window.parent).onLogin(JSON.parse(${JSON.stringify(data)}));
+  (window.opener || window.parent).postMessage(${JSON.stringify(data)}, "*");
 </script>`);
     }
   );

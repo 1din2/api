@@ -18,12 +18,13 @@ import { ForbiddenError, InvalidInputError } from "../../../domain/base/errors";
 import { UserRole } from "../../../domain/user/entity/user";
 import { CreatePollInput } from "../../../domain/poll/usecase/create-poll-usecase";
 import { InputCreatePoll } from "./inputs/create-poll-input";
-import { checkUserRole } from "../../auth";
+import { checkProject, checkUserRole } from "../../auth";
 import { UpdatePollInput } from "../../../domain/poll/usecase/update-poll-usecase";
 import { InputUpdatePoll } from "./inputs/update-poll-input";
 import { slugify } from "../../../domain/base/util";
 import { TypeTag } from "../types/tag-type";
 import configuration from "../../../container/configuration";
+import { TypePollVote } from "../types/poll-vote-type";
 
 @Resolver(() => TypePoll)
 export default class PollResolver {
@@ -113,7 +114,7 @@ export default class PollResolver {
     @Arg("slug", () => String) slug: EntityId,
     @Ctx() { services, project }: ApiContext
   ) {
-    if (!project) throw new InvalidInputError("Project is required");
+    project = checkProject(project);
     return services.poll.findBySlug({ slug, project });
   }
 
@@ -130,5 +131,30 @@ export default class PollResolver {
   @FieldResolver(() => [TypeTag], { description: "Get poll tags" })
   tags(@Root() root: Poll, @Ctx() { services }: ApiContext) {
     return services.tag.findByPollId(root.id);
+  }
+
+  @FieldResolver(() => [TypePollVote], {
+    description: "Get current user's votes",
+  })
+  userVotes(@Root() root: Poll, @Ctx() { services, currentUser }: ApiContext) {
+    return currentUser
+      ? services.pollOptionVote.find({
+          userId: currentUser.id,
+          pollId: root.id,
+        })
+      : [];
+  }
+
+  @Query(() => TypeTag, { nullable: true, description: "Tag by slug" })
+  tagBySlug(
+    @Arg("slug", () => String) slug: string,
+    @Arg("lang", () => String, { nullable: true }) lang: string,
+    @Ctx() { project, services, language }: ApiContext
+  ) {
+    checkProject(project);
+    return services.tag.findOneBySlug({
+      slug,
+      language: lang || language,
+    });
   }
 }
