@@ -6,7 +6,7 @@ import {
   AuthDomainContext,
   AuthUseCase,
 } from "../../user/usecase/auth-usercase";
-import { Poll } from "../entity/poll";
+import { Poll, PollStatus } from "../entity/poll";
 import { PollOption } from "../entity/poll-option";
 import {
   PollOptionVote,
@@ -41,6 +41,8 @@ export class VotePollUseCase extends AuthUseCase<VotePollInput, Poll> {
     const pollId = pollIds[0];
 
     const poll = await this.pollService.checkById(pollId);
+    if (poll.status !== PollStatus.ACTIVE)
+      throw new InvalidInputError("Poll is not active");
 
     if (
       pollOptionIds.length < poll.minSelect ||
@@ -53,25 +55,17 @@ export class VotePollUseCase extends AuthUseCase<VotePollInput, Poll> {
       pollId,
     });
 
-    await this.pollOptionService.transaction(async (trx) => {
-      await this.pollOptionVoteService.deleteByIds(
-        existing.map((e) => e.id),
-        trx
-      );
+    await this.pollOptionVoteService.deleteByIds(existing.map((e) => e.id));
 
-      await this.pollOptionVoteService.createMany(
-        pollOptionIds.map<PollOptionVoteCreateData>(
-          (pollOptionId) => ({
-            pollOptionId,
-            pollId,
-            userId: currentUser.id,
-            id: PollOptionVote.createId(),
-            ip,
-          }),
-          trx
-        )
-      );
-    });
+    await this.pollOptionVoteService.createMany(
+      pollOptionIds.map<PollOptionVoteCreateData>((pollOptionId) => ({
+        pollOptionId,
+        pollId,
+        userId: currentUser.id,
+        id: PollOptionVote.createId(),
+        ip,
+      }))
+    );
 
     return poll;
   }

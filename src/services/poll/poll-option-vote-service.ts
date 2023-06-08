@@ -46,7 +46,7 @@ export class PollOptionVoteDbService
     pollId,
     pollOptionId,
   }: CountPollOptionVoteParams): Promise<number> {
-    const query = this.query().distinct("userId").as("total");
+    const query = this.query().countDistinct("userId", { as: "total" });
     if (pollId) query.where({ pollId });
     if (pollOptionId) query.where({ pollOptionId });
     const item = await query.first();

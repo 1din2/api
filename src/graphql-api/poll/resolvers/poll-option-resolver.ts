@@ -17,6 +17,7 @@ import { SavePollOptionInput } from "../../../domain/poll/usecase/save-poll-opti
 import { TypeWebImage } from "../../image/types/type-web-image";
 import { TypePoll } from "../types/poll-type";
 import { TypeTag } from "../types/tag-type";
+import { TypeImage } from "../../image/types/type-image";
 
 @Resolver(() => TypePollOption)
 export default class PollOptionResolver {
@@ -49,5 +50,10 @@ export default class PollOptionResolver {
   @FieldResolver(() => [TypeTag], { description: "Get poll option tags" })
   tags(@Root() root: PollOption, @Ctx() { services }: ApiContext) {
     return services.tag.findByPollOptionId(root.id);
+  }
+
+  @FieldResolver(() => TypeImage, { nullable: true })
+  image(@Root() root: PollOption, @Ctx() { services }: ApiContext) {
+    return root.imageId ? services.image.findById(root.imageId) : null;
   }
 }

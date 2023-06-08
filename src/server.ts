@@ -1,5 +1,6 @@
 import express from "express";
 import http from "http";
+import cors from "cors";
 import FacebookStrategy from "passport-facebook";
 import { createApiContext } from "./container/api-context";
 import rateLimit from "./rate-limit";
@@ -31,9 +32,12 @@ passport.use(
   )
 );
 
+const allowedOrigins = ["https://www.1din2.ro"];
+if (!configuration.isProduction) allowedOrigins.push("http://localhost:3000");
+
 export default () => {
   const app = express();
-
+  app.use(cors({ origin: allowedOrigins }));
   rateLimit(app);
 
   app.get("/favicon.ico", (_req, res) => res.sendStatus(204));

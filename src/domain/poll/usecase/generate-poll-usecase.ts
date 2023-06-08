@@ -14,7 +14,7 @@ import { SavePollOptionUseCase } from "./save-poll-option-usecase";
 
 export interface GeneratePollInput {
   language: string;
-  news?: string;
+  info?: string;
 }
 
 export class GeneratePollUseCase extends AuthUseCase<GeneratePollInput, Poll> {

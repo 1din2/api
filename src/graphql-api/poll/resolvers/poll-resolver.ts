@@ -64,10 +64,10 @@ export default class PollResolver {
   generatePoll(
     @Ctx() context: ApiContext,
     @Arg("language", () => String) language: string,
-    @Arg("news", () => String, { nullable: true }) news?: string
+    @Arg("info", () => String, { nullable: true }) info?: string
   ) {
     checkUserRole(context, UserRole.ADMIN);
-    return context.usecases.generatePoll.execute({ language, news }, context);
+    return context.usecases.generatePoll.execute({ language, info }, context);
   }
 
   @Query(() => [TypePoll], { nullable: true, description: "Find polls" })

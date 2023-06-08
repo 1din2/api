@@ -18,13 +18,13 @@ const openai = new OpenAIApi(configuration);
 
 export default async ({
   language,
-  news,
+  info,
 }: PollGenerateParams): Promise<PollGenerateData> => {
   const versions = readYaml<string[]>(
     join(__dirname, "../../../../data/polls", `${language}.yaml`)
   );
   let prompt = versions[getRandomInt(0, versions.length - 1)];
-  if (news) prompt += `\nNews:\n${news.slice(0, 500)}`;
+  if (info) prompt += `\n${info.slice(0, 500)}`;
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo-0301",
     messages: [{ role: "user", content: prompt }],

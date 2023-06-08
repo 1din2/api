@@ -16,7 +16,7 @@ export interface FindPollParams {
 
 export interface PollGenerateParams {
   language: string;
-  news?: string;
+  info?: string;
 }
 
 export interface PollGenerateTextData {
