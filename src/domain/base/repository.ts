@@ -7,6 +7,7 @@ import {
 } from "./entity";
 import { NotFoundError } from "./errors";
 import { Emitter, IEmitter } from "./events";
+import { omitFieldsByValue } from "./util";
 import { Validator } from "./validator";
 
 export interface RepositoryEvents<
@@ -223,6 +224,7 @@ export abstract class BaseRepository<
    * @param data Entity data
    */
   protected async preUpdate(data: TUpdate): Promise<TUpdate> {
+    data = omitFieldsByValue(data, [undefined]);
     if (this.options.updateValidator) {
       data = await this.options.updateValidator.validate(data);
     }

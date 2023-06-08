@@ -11,13 +11,18 @@ import { PollOption, PollOptionData } from "../entity/poll-option";
 import { PollOptionService } from "../service/poll-option-service";
 import { InvalidInputError } from "../../base/errors";
 import { isNumber } from "../../base/util";
+import { UploadImageUseCase } from "../../image/usecase/upload-image-usecase";
+import { EntityId } from "../../base/entity";
+import { WebImageService } from "../../image/service/web-image-service";
+import axios from "axios";
+import { parse as getContentType } from "content-type";
 
 export type SavePollOptionInput = Partial<
   Pick<
     PollOptionData,
     "title" | "pollId" | "imageId" | "description" | "color" | "id" | "priority"
   >
-> & { tags?: string[] };
+> & { tags?: string[]; webImageId?: EntityId; imageUrl?: string };
 
 export class SavePollOptionUseCase extends AuthUseCase<
   SavePollOptionInput,
@@ -25,9 +30,51 @@ export class SavePollOptionUseCase extends AuthUseCase<
 > {
   constructor(
     private pollOptionService: PollOptionService,
-    private saveTags: SavePollTagsUseCase
+    private webImageService: WebImageService,
+    private saveTags: SavePollTagsUseCase,
+    private uploadImage: UploadImageUseCase
   ) {
     super(UserRole.ADMIN);
+  }
+
+  private async getImageId(
+    { imageId, imageUrl, webImageId }: SavePollOptionInput,
+    context: AuthDomainContext
+  ): Promise<EntityId | undefined | null> {
+    if (imageId !== undefined) return imageId;
+
+    if (webImageId) {
+      const webImage = await this.webImageService.checkById(webImageId);
+      imageUrl = webImage.url;
+    }
+
+    if (imageUrl) {
+      const response = await axios({
+        url: imageUrl,
+        timeout: 1000 * 10,
+        maxRedirects: 1,
+        maxContentLength: 20e6,
+        responseType: "stream",
+        headers: {
+          Accept: "image/webp,image/apng,image/*,*/*;q=0.8",
+        },
+      });
+      const filename = new URL(imageUrl).pathname.split("/").pop() || "image";
+      const mimetype =
+        getContentType(response.headers["content-type"])?.type || "image/jpeg";
+      const image = await this.uploadImage.execute(
+        {
+          stream: response.data,
+          encoding: "binary",
+          filename,
+          mimetype,
+        },
+        context
+      );
+      return image.id;
+    }
+
+    return undefined;
   }
 
   private create({
@@ -66,10 +113,9 @@ export class SavePollOptionUseCase extends AuthUseCase<
   }: SavePollOptionInput): Promise<PollOption> {
     if (!id) throw new InvalidInputError("id is required");
     if (pollId) throw new InvalidInputError("pollId can't be updated");
-    if (!title) throw new InvalidInputError("title is required");
+    if (title === null) throw new InvalidInputError("title is required");
     if (color === null) throw new InvalidInputError("color is required");
-    if (!isNumber(priority))
-      throw new InvalidInputError("priority is required");
+    if (priority === null) throw new InvalidInputError("priority is required");
     if (imageId === null) throw new InvalidInputError("imageId is required");
 
     return this.pollOptionService.update({
@@ -86,6 +132,8 @@ export class SavePollOptionUseCase extends AuthUseCase<
     input: SavePollOptionInput,
     context: AuthDomainContext
   ): Promise<PollOption> {
+    input.imageId = await this.getImageId(input, context);
+    if (input.imageId === undefined) delete input.imageId;
     const option = input.id
       ? await this.update(input)
       : await this.create(input);
@@ -130,6 +178,8 @@ export class SavePollOptionUseCase extends AuthUseCase<
         minItems: 0,
         maxItems: 5,
       },
+      imageUrl: { type: "string", format: "uri" },
+      webImageId: { type: "string" },
     },
     required: [],
     additionalProperties: false,

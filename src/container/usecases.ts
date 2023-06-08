@@ -1,3 +1,4 @@
+import { UploadImageUseCase } from "../domain/image/usecase/upload-image-usecase";
 import { CreatePollUseCase } from "../domain/poll/usecase/create-poll-usecase";
 import { GeneratePollUseCase } from "../domain/poll/usecase/generate-poll-usecase";
 import { SavePollOptionUseCase } from "../domain/poll/usecase/save-poll-option-usecase";
@@ -41,9 +42,16 @@ const create = (services: ApiServices) => {
 
   const createPoll = new CreatePollUseCase(services.poll, savePollTags);
   const updatePoll = new UpdatePollUseCase(services.poll, savePollTags);
+  const uploadImage = new UploadImageUseCase(
+    services.image,
+    services.imageMetadata,
+    services.imageStorage
+  );
   const savePollOption = new SavePollOptionUseCase(
     services.pollOption,
-    savePollTags
+    services.webImage,
+    savePollTags,
+    uploadImage
   );
   const setPollStatus = new SetPollStatusUseCase(
     services.poll,

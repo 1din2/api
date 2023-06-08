@@ -6,6 +6,7 @@ import {
   ImageStorageSaveOutput,
 } from "../../domain/image/service/image-storage";
 import logger from "../../domain/logger";
+import configuration from "../../container/configuration";
 
 export type S3ImageStorageConfig = {
   bucket: string;
@@ -27,7 +28,14 @@ const formatKey = (
 };
 
 export class S3ImageStorage implements ImageStorage {
-  constructor(private s3: S3, private config: S3ImageStorageConfig) {}
+  private s3: S3;
+  constructor(private config: S3ImageStorageConfig) {
+    this.s3 = new S3({
+      accessKeyId: configuration.aws_access_key_id,
+      secretAccessKey: configuration.aws_secret_access_key,
+      region: configuration.aws_image_s3_region,
+    });
+  }
 
   async delete({
     hash,

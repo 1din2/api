@@ -1,4 +1,4 @@
-import { Field, ID, InputType } from "type-graphql";
+import { Field, ID, InputType, Int } from "type-graphql";
 import { SavePollOptionInput } from "../../../../domain/poll/usecase/save-poll-option-usecase";
 
 @InputType("InputSavePollOption")
@@ -21,9 +21,15 @@ export class InputSavePollOption implements SavePollOptionInput {
   @Field(() => ID, { nullable: true })
   id?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   priority?: number;
 
   @Field(() => [String], { nullable: true })
   tags?: string[];
+
+  @Field(() => ID, { nullable: true })
+  webImageId?: string;
+
+  @Field({ nullable: true })
+  imageUrl?: string;
 }

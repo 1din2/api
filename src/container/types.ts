@@ -1,6 +1,8 @@
 import { Logger } from "../domain/base/logger";
 import { DomainContext } from "../domain/base/usecase";
+import { ImageMetadataService } from "../domain/image/service/image-metadata-service";
 import { ImageService } from "../domain/image/service/image-service";
+import { ImageStorage } from "../domain/image/service/image-storage";
 import { WebImageService } from "../domain/image/service/web-image-service";
 import { PollOptionService } from "../domain/poll/service/poll-option-service";
 import { PollOptionVoteService } from "../domain/poll/service/poll-option-vote-service";
@@ -23,6 +25,8 @@ export type ApiServicesInput = {
   tag?: TagService;
   pollTag?: PollTagService;
   webImage?: WebImageService;
+  imageMetadata?: ImageMetadataService;
+  imageStorage?: ImageStorage;
 };
 
 export type ApiUserData = Pick<

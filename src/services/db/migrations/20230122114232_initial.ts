@@ -38,7 +38,6 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable("Image", (table) => {
     table.string("id", 40).notNullable().primary();
     table.string("provider", 10).notNullable();
-    table.string("type", 10).notNullable();
     table.string("contentType", 50).notNullable();
     table.string("hash", 40).notNullable();
     table.string("color", 6);

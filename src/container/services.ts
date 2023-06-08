@@ -22,6 +22,11 @@ import { PollTagDbService } from "../services/poll/poll-tag-service";
 import { TagDbService } from "../services/poll/tag-service";
 import { WebImageService } from "../domain/image/service/web-image-service";
 import { WebImageDbService } from "../services/image/web-image-service";
+import { ImageMetadataService } from "../domain/image/service/image-metadata-service";
+import { ShartImageMetadataService } from "../services/image/sharp-image-metadata";
+import { ImageStorage } from "../domain/image/service/image-storage";
+import { S3ImageStorage } from "../services/image/s3-image-storage";
+import configuration from "./configuration";
 
 export interface ApiServices {
   logger: Logger;
@@ -35,6 +40,8 @@ export interface ApiServices {
   tag: TagService;
   pollTag: PollTagService;
   webImage: WebImageService;
+  imageMetadata: ImageMetadataService;
+  imageStorage: ImageStorage;
 }
 
 let instance: ApiServices;
@@ -54,6 +61,12 @@ const createServices = (
   const tag = input?.tag ?? new TagDbService();
   const pollTag = input?.pollTag ?? new PollTagDbService();
   const webImage = input?.webImage ?? new WebImageDbService();
+  const imageMetadata = input?.imageMetadata ?? new ShartImageMetadataService();
+  const imageStorage =
+    input?.imageStorage ??
+    new S3ImageStorage({
+      bucket: configuration.aws_image_s3_buchet,
+    });
 
   const services: ApiServices = {
     logger,
@@ -67,6 +80,8 @@ const createServices = (
     tag,
     pollTag,
     webImage,
+    imageMetadata,
+    imageStorage,
   };
 
   return services;
