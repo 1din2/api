@@ -45,7 +45,7 @@ export default async function (
       "Accept-Language":
         "en-US,en;q=0.8,cs;q=0.6,es;q=0.4,hu;q=0.2,it;q=0.2,lt;q=0.2,ro;q=0.2,ru;q=0.2,sk;q=0.2,uk;q=0.2,pl;q=0.2,bg;q=0.2",
     },
-    maxRedirects: 1,
+    maxRedirects: 2,
     responseType: "text",
   };
 
