@@ -25,9 +25,13 @@ export interface PollGenerateTextData {
   tags?: string[];
 }
 
+export interface PollGenerateOptionData extends PollGenerateTextData {
+  textToSearchImage?: string;
+}
+
 export interface PollGenerateData extends PollGenerateTextData {
   language: string;
-  options: PollGenerateTextData[];
+  options: PollGenerateOptionData[];
 }
 
 export interface PollService extends Repository<PollData, Poll> {

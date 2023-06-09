@@ -4,4 +4,4 @@
   Output language: ro
   Tags are mainly persons, places or organizations.
   json format:
-  { question:"", answers: [{title:"",description:""}], description:"", tags:[] }
+  { question:"", answers: [{title:"",description:"",textToSearchImage:""}], description:"", tags:[] }

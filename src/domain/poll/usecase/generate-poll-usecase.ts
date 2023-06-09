@@ -93,10 +93,7 @@ export class GeneratePollUseCase extends AuthUseCase<GeneratePollInput, Poll> {
         context
       );
       await this.createWebImages({
-        text:
-          option.title.length > 10
-            ? option.title
-            : option.description || option.title,
+        text: op.textToSearchImage || op.title,
         pollId: poll.id,
         pollOptionId: option.id,
       });
