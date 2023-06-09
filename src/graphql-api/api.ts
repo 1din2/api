@@ -24,6 +24,7 @@ async function startApolloServer(app: Express, httpServer: http.Server) {
         settings: { "editor.theme": "light" },
       }),
     ],
+    introspection: true,
   });
 
   await server.start();
