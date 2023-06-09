@@ -32,9 +32,9 @@ export class SetPollStatusUseCase extends AuthUseCase<
         throw new InvalidInputError(`Poll has already ended`);
       // if (!poll.imageId) throw new InvalidInputError(`Poll must have an image`);
       const options = await this.pollOptionService.findByPollId(id);
-      if (options.length < poll.minSelect || options.length > poll.maxSelect)
+      if (options.length < poll.minSelect || options.length === 0)
         throw new InvalidInputError(
-          `Poll must have at least ${poll.minSelect} and at most ${poll.maxSelect} options`
+          `Poll must have at least ${poll.minSelect} options`
         );
     }
 
