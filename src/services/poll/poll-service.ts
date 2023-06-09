@@ -38,9 +38,10 @@ export class PollDbService
       query.whereExists((builder) =>
         builder
           .from("PollTag")
+          .innerJoin("Tag", "Tag.id", "PollTag.tagId")
           .select(this.knex.raw(1))
           .whereRaw(`"PollTag"."pollId" = "Poll".id`)
-          .where({ slug: tag })
+          .whereRaw(`"Tag"."slug" = ?`, [tag])
       );
 
     const items = await query.orderBy("id", "desc");
