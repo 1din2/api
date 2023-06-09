@@ -32,12 +32,17 @@ export class GeneratePollUseCase extends AuthUseCase<GeneratePollInput, Poll> {
     pollId: string;
     pollOptionId: string;
   }) {
-    const images = await this.webImageService.webSearch({
-      query: data.text,
-      limit: 4,
-      minHeight: 500,
-      minWidth: 500,
-    });
+    const images = await this.webImageService
+      .webSearch({
+        query: data.text,
+        limit: 4,
+        minHeight: 500,
+        minWidth: 500,
+      })
+      .catch((err) => {
+        logger.error(err);
+        return [];
+      });
 
     if (!images.length) logger.warn(`No images found for ${data.text}`);
 
