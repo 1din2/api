@@ -1,5 +1,5 @@
 {
-  "script": "./lib/index.js",
+  "script": "./dist/index.js",
   "max_memory_restart": "300M",
   "name": "api-1of2"
 }
