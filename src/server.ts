@@ -33,7 +33,8 @@ passport.use(
 );
 
 const allowedOrigins = ["https://www.1din2.ro"];
-if (!configuration.isProduction) allowedOrigins.push("http://localhost:3000");
+// if (!configuration.isProduction)
+allowedOrigins.push("http://localhost:3000");
 
 export default () => {
   const app = express();
