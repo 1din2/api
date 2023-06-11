@@ -30,7 +30,11 @@ export async function up(knex: Knex): Promise<void> {
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
 
-    table.string("userId", 40).notNullable().references("User.id");
+    table
+      .string("userId", 40)
+      .notNullable()
+      .references("User.id")
+      .onDelete("CASCADE");
 
     table.unique(["provider", "providerId"]);
   });
@@ -47,7 +51,12 @@ export async function up(knex: Knex): Promise<void> {
     table.integer("width").notNullable();
     table.string("content");
     table.string("url");
-    table.string("userId", 40).index().references("User.id");
+    table
+      .string("userId", 40)
+      .nullable()
+      .index()
+      .references("User.id")
+      .onDelete("SET NULL");
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
 
@@ -66,7 +75,11 @@ export async function up(knex: Knex): Promise<void> {
     table.integer("minSelect").notNullable();
     table.integer("maxSelect").notNullable();
     table.dateTime("endsAt").notNullable().index();
-    table.string("userId", 40).notNullable().references("User.id");
+    table
+      .string("userId", 40)
+      .notNullable()
+      .references("User.id")
+      .onDelete("CASCADE");
     table.string("imageId", 40).references("Image.id").onDelete("SET NULL");
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
@@ -81,8 +94,17 @@ export async function up(knex: Knex): Promise<void> {
     table.string("title").notNullable();
     table.string("description");
     table.integer("priority").notNullable();
-    table.string("pollId", 40).notNullable().references("Poll.id").index();
-    table.string("imageId", 40).nullable().references("Image.id");
+    table
+      .string("pollId", 40)
+      .notNullable()
+      .references("Poll.id")
+      .index()
+      .onDelete("CASCADE");
+    table
+      .string("imageId", 40)
+      .nullable()
+      .references("Image.id")
+      .onDelete("CASCADE");
     table.string("color", 6).nullable();
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
@@ -90,9 +112,23 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.schema.createTable("PollOptionVote", (table) => {
     table.string("id", 40).notNullable().primary();
-    table.string("userId", 40).notNullable().references("User.id").index();
-    table.string("pollId", 40).notNullable().references("Poll.id").index();
-    table.string("pollOptionId", 40).notNullable().references("PollOption.id");
+    table
+      .string("userId", 40)
+      .notNullable()
+      .references("User.id")
+      .index()
+      .onDelete("CASCADE");
+    table
+      .string("pollId", 40)
+      .notNullable()
+      .references("Poll.id")
+      .index()
+      .onDelete("CASCADE");
+    table
+      .string("pollOptionId", 40)
+      .notNullable()
+      .references("PollOption.id")
+      .onDelete("CASCADE");
     table.string("ip", 40).notNullable();
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
@@ -114,9 +150,23 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.schema.createTable("PollTag", (table) => {
     table.string("id", 40).notNullable().primary();
-    table.string("pollId", 40).notNullable().references("Poll.id").index();
-    table.string("tagId", 40).notNullable().references("Tag.id").index();
-    table.string("pollOptionId", 40).references("PollOption.id").index();
+    table
+      .string("pollId", 40)
+      .notNullable()
+      .references("Poll.id")
+      .index()
+      .onDelete("CASCADE");
+    table
+      .string("tagId", 40)
+      .notNullable()
+      .references("Tag.id")
+      .index()
+      .onDelete("CASCADE");
+    table
+      .string("pollOptionId", 40)
+      .references("PollOption.id")
+      .index()
+      .onDelete("CASCADE");
     table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
 
