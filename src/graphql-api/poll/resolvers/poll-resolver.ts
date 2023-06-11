@@ -46,8 +46,7 @@ export default class PollResolver {
 
   @Mutation(() => TypePoll, { nullable: true, description: "Delete a poll" })
   deletePoll(@Arg("id", () => ID) id: EntityId, @Ctx() context: ApiContext) {
-    checkUserRole(context, UserRole.ADMIN);
-    return context.services.poll.deleteById(id);
+    return context.usecases.deletePoll.execute({ id }, context);
   }
 
   @Mutation(() => TypePoll, { description: "Set poll status" })

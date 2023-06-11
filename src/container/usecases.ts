@@ -1,5 +1,6 @@
 import { UploadImageUseCase } from "../domain/image/usecase/upload-image-usecase";
 import { CreatePollUseCase } from "../domain/poll/usecase/create-poll-usecase";
+import { DeletePollUseCase } from "../domain/poll/usecase/delete-poll-usecase";
 import { GeneratePollUseCase } from "../domain/poll/usecase/generate-poll-usecase";
 import { SavePollOptionUseCase } from "../domain/poll/usecase/save-poll-option-usecase";
 import { SavePollTagsUseCase } from "../domain/poll/usecase/save-poll-tags-usecase";
@@ -18,6 +19,7 @@ export interface ApiUsecases {
   savePollOption: SavePollOptionUseCase;
   setPollStatus: SetPollStatusUseCase;
   generatePoll: GeneratePollUseCase;
+  deletePoll: DeletePollUseCase;
 }
 
 let instance: ApiUsecases;
@@ -64,6 +66,8 @@ const create = (services: ApiServices) => {
     services.webImage
   );
 
+  const deletePoll = new DeletePollUseCase(services.poll);
+
   const usecases: ApiUsecases = {
     providerLogin,
     votePoll,
@@ -73,6 +77,7 @@ const create = (services: ApiServices) => {
     savePollOption,
     setPollStatus,
     generatePoll,
+    deletePoll,
   };
 
   return usecases;
