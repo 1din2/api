@@ -96,9 +96,10 @@ export class Account extends BaseEntity<AccountData> implements AccountData {
           { type: "null" },
           {
             type: "array",
-            items: { type: "string", minLength: 10, maxLength: 255 },
+            items: { type: "string", minLength: 10, maxLength: 500 },
             uniqueItems: true,
-            minItems: 1,
+            minItems: 0,
+            maxItems: 20,
           },
         ],
       },
