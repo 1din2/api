@@ -41,6 +41,9 @@ export interface Configuration {
   root_path: string;
   facebook_app_id: string;
   facebook_app_secret: string;
+
+  google_client_id: string;
+  google_client_secret: string;
 }
 
 let configuration: Configuration;
@@ -68,6 +71,8 @@ const envsToInclude: (keyof Configuration)[] = [
   "root_path",
   "facebook_app_id",
   "facebook_app_secret",
+  "google_client_id",
+  "google_client_secret",
 ];
 
 function readJson(readPath: string) {
