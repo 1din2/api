@@ -37,7 +37,7 @@ export class SavePollTagsUseCase extends AuthUseCase<
 
     for (const data of input.data) {
       const optionExistingTags = existingTags.filter(
-        (it) => it.pollOptionId || null === data.pollOptionId || null
+        (it) => (it.pollOptionId || null) === (data.pollOptionId || null)
       );
 
       const tags = await this.tagService.findOrCreateMany(
