@@ -34,22 +34,23 @@ export class UpdatePollUseCase extends AuthUseCase<UpdatePollInput, Poll> {
   }
 
   protected override async innerExecute(
-    input: UpdatePollInput,
+    { tags, ...data }: UpdatePollInput,
     context: AuthDomainContext
   ): Promise<Poll> {
-    const updateData: PollUpdateData = {
-      ...input,
-    };
+    const updateData: PollUpdateData = data;
 
     if (updateData.slug) updateData.slug = slugify(updateData.slug);
 
-    const poll = await this.pollService.update(updateData);
+    const poll =
+      Object.keys(updateData).length > 1
+        ? await this.pollService.update(updateData)
+        : await this.pollService.checkById(data.id);
 
-    if (input.tags)
+    if (tags)
       await this.saveTags.execute(
         {
           pollId: poll.id,
-          data: [{ tags: input.tags.map((name) => ({ name })) }],
+          data: [{ tags: tags.map((name) => ({ name })) }],
         },
         context
       );
