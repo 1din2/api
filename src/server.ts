@@ -42,7 +42,7 @@ passport.use(
       callbackURL: `${configuration.root_path}/auth/callback/google`,
       passReqToCallback: true,
       scope: ["profile", "email"],
-      state: true,
+      state: false,
     },
     function verify(req, _accessToken, _refreshToken, profile, done) {
       const apiContext = req.apiContext;
