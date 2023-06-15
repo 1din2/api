@@ -74,7 +74,7 @@ function authCallback(req: Request, res: Response) {
   res.send(`<h4>Closing...</h4>
 <script type="text/javascript">
 (window.opener || window.parent).postMessage(${JSON.stringify(data)}, "*");
-setTimeout(() => try{window.close()}catch{}, 1000);
+setTimeout(() => {try{window.close()}catch(e){console.log(e)}}, 1000);
 </script>`);
 }
 
