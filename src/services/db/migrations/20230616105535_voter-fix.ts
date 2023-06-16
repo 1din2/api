@@ -1,9 +1,9 @@
 import * as Knex from "knex";
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable("Voter", (table) => {
-    table.string("id", 40).alter();
-    table.string("uid", 40).notNullable().alter();
+  await knex.schema.alterTable("Voter", (table) => {
+    table.string("id", 40).primary().alter();
+    table.string("uid", 40).notNullable().unique().alter();
     table.string("ip", 40).notNullable().alter();
     table.string("userId", 40).nullable().alter();
   });
