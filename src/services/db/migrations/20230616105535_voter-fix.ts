@@ -1,16 +1,11 @@
 import * as Knex from "knex";
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.dropTable("Voter");
-
   await knex.schema.createTable("Voter", (table) => {
-    table.string("id", 40).primary();
-    table.string("uid", 40).notNullable().unique();
-    table.string("ip", 40).notNullable();
-    table.string("userId", 40).nullable();
-
-    table.dateTime("createdAt").notNullable().defaultTo(knex.raw("NOW()"));
-    table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
+    table.string("id", 40).primary().alter();
+    table.string("uid", 40).notNullable().unique().alter();
+    table.string("ip", 40).notNullable().alter();
+    table.string("userId", 40).nullable().alter();
   });
 
   await knex.raw(`DELETE FROM "PollOptionVote"`);
