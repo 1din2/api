@@ -9,7 +9,6 @@ export default async (req: Request, voterService: VoterService) => {
   return voterService.findOrCreate({
     id: Voter.createId(),
     uid,
-    userAgent: req.headers["user-agent"] as string,
     ip: req.ip,
   });
 };
