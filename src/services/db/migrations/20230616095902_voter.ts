@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
     table.dateTime("updatedAt").notNullable().defaultTo(knex.raw("NOW()"));
   });
 
-  knex.raw(`DELETE FROM "PollOptionVote"`);
+  await knex.raw(`DELETE FROM "PollOptionVote"`);
 
   await knex.schema.alterTable("PollOptionVote", (table) => {
     table.dropColumn("userId");
