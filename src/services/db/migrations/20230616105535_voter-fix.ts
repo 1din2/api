@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.dropTable("PollOptionVote");
   await knex.schema.dropTable("Voter");
 
-  await knex.schema.alterTable("Voter", (table) => {
+  await knex.schema.createTable("Voter", (table) => {
     table.string("id", 40).primary();
     table.string("uid", 40).notNullable().unique();
     table.string("ip", 40).notNullable();
