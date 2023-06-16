@@ -10,6 +10,7 @@ import getHeadersData from "./helpers/get-headers-data";
 import { AuthDomainContext } from "../domain/user/usecase/auth-usercase";
 import getCurrentUser from "./helpers/get-current-user";
 import { ApiUsecases, getApiUsecases } from "./usecases";
+import getCurrentVoter from "./helpers/get-current-voter";
 
 export interface ApiContext extends AuthDomainContext {
   services: ApiServices;
@@ -49,7 +50,12 @@ export async function createApiContext(
 
   const services = getApiServices(cacheStorage, inputData?.services);
   const logger = services.logger;
-  const currentUser = req ? await getCurrentUser(req, services.user) : null;
+  const [currentUser, voter] = req
+    ? await Promise.all([
+        getCurrentUser(req, services.user),
+        getCurrentVoter(req, services.voter),
+      ])
+    : [null, null];
 
   const data = req
     ? getHeadersData(req, res)
@@ -75,6 +81,7 @@ export async function createApiContext(
       await dbInstance().destroy();
     },
     currentUser: currentUser as never,
+    voter: voter as never,
   };
 
   return context;

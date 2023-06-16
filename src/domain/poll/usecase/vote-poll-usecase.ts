@@ -3,9 +3,9 @@ import { InvalidInputError } from "../../base/errors";
 import { RequiredJSONSchema } from "../../base/json-schema";
 import { uniq } from "../../base/util";
 import {
-  AuthDomainContext,
-  AuthUseCase,
-} from "../../user/usecase/auth-usercase";
+  VoterDomainContext,
+  VoterUseCase,
+} from "../../user/usecase/voter-usercase";
 import { Poll, PollStatus } from "../entity/poll";
 import { PollOption } from "../entity/poll-option";
 import {
@@ -20,7 +20,7 @@ export interface VotePollInput {
   pollOptionIds: EntityId[];
 }
 
-export class VotePollUseCase extends AuthUseCase<VotePollInput, Poll> {
+export class VotePollUseCase extends VoterUseCase<VotePollInput, Poll> {
   constructor(
     private pollService: PollService,
     private pollOptionService: PollOptionService,
@@ -31,7 +31,7 @@ export class VotePollUseCase extends AuthUseCase<VotePollInput, Poll> {
 
   protected override async innerExecute(
     { pollOptionIds }: VotePollInput,
-    { currentUser, ip }: AuthDomainContext
+    { voter, ip }: VoterDomainContext
   ) {
     const pollOptions = await this.pollOptionService.findByIds(pollOptionIds);
     const pollIds = uniq(pollOptions.map((po) => po.pollId));
@@ -51,7 +51,7 @@ export class VotePollUseCase extends AuthUseCase<VotePollInput, Poll> {
       throw new InvalidInputError("Invalid poll option ids count");
 
     const existing = await this.pollOptionVoteService.find({
-      userId: currentUser.id,
+      voterId: voter.id,
       pollId,
     });
 
@@ -61,7 +61,7 @@ export class VotePollUseCase extends AuthUseCase<VotePollInput, Poll> {
       pollOptionIds.map<PollOptionVoteCreateData>((pollOptionId) => ({
         pollOptionId,
         pollId,
-        userId: currentUser.id,
+        voterId: voter.id,
         id: PollOptionVote.createId(),
         ip,
       }))

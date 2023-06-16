@@ -1,9 +1,10 @@
-import { BaseUseCase, UseCaseEvents, DomainContext } from "../../base/usecase";
+import { BaseUseCase, UseCaseEvents } from "../../base/usecase";
 import { Validator } from "../../base/validator";
 import { AuthenticationError, ForbiddenError } from "../../base/errors";
 import { User, UserRole } from "../entity/user";
+import { VoterDomainContext } from "./voter-usercase";
 
-export interface AuthDomainContext extends DomainContext {
+export interface AuthDomainContext extends VoterDomainContext {
   currentUser: User;
 }
 

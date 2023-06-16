@@ -10,7 +10,7 @@ export interface CountPollOptionVoteParams {
 export interface FindVoteParams {
   pollId?: EntityId;
   pollOptionId?: EntityId;
-  userId?: EntityId;
+  voterId?: EntityId;
 
   limit?: number;
   offset?: number;
@@ -18,14 +18,14 @@ export interface FindVoteParams {
 
 export interface FindVoteByUserOptionParams {
   pollOptionId: EntityId;
-  userId: EntityId;
+  voterId: EntityId;
 }
 
 export interface PollOptionVoteService
   extends Repository<PollOptionVoteData, PollOptionVote> {
   countVotes(params: CountPollOptionVoteParams): Promise<number>;
   find(params: FindVoteParams): Promise<PollOptionVote[]>;
-  findByUserOption(
+  findByVoterOption(
     params: FindVoteByUserOptionParams
   ): Promise<PollOptionVote | null>;
 }

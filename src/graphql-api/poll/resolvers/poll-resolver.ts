@@ -135,10 +135,10 @@ export default class PollResolver {
   @FieldResolver(() => [TypePollVote], {
     description: "Get current user's votes",
   })
-  userVotes(@Root() root: Poll, @Ctx() { services, currentUser }: ApiContext) {
-    return currentUser
+  userVotes(@Root() root: Poll, @Ctx() { services, voter }: ApiContext) {
+    return voter
       ? services.pollOptionVote.find({
-          userId: currentUser.id,
+          voterId: voter.id,
           pollId: root.id,
         })
       : [];

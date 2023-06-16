@@ -4,6 +4,7 @@ import { Voter, VoterData } from "../entity/voter";
 
 export type FindVoterParams = {
   ip?: string;
+  uid?: string;
   userId?: EntityId;
   limit?: number;
   offset?: number;
@@ -12,4 +13,5 @@ export type FindVoterParams = {
 
 export interface VoterService extends Repository<VoterData, Voter> {
   find(params: FindVoterParams): Promise<Voter[]>;
+  findByUId(uid: string): Promise<Voter | null>;
 }

@@ -9,6 +9,8 @@ import { RequiredJSONSchema } from "../../base/json-schema";
 
 export interface VoterData extends EntityData {
   ip: string;
+  uid: string;
+  userAgent?: string;
   userId?: EntityId;
 }
 
@@ -19,8 +21,14 @@ export class Voter extends BaseEntity<VoterData> implements VoterData {
   get ip() {
     return this.get("ip");
   }
+  get uid() {
+    return this.get("uid");
+  }
   get userId() {
     return this.get("userId");
+  }
+  get userAgent() {
+    return this.get("userAgent");
   }
 
   public static override jsonSchema: RequiredJSONSchema = {
@@ -28,9 +36,11 @@ export class Voter extends BaseEntity<VoterData> implements VoterData {
     properties: {
       ...BaseEntity.jsonSchema.properties,
       ip: { type: "string" },
+      uid: { type: "string", pattern: "^[a-z]{4}\\d{10}$" },
+      userAgent: { type: ["string", "null"] },
       userId: { type: ["string", "null"] },
     },
-    required: [...BaseEntity.jsonSchema.required, "ip"],
+    required: [...BaseEntity.jsonSchema.required, "ip", "uid"],
     additionalProperties: false,
   };
 }

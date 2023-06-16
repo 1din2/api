@@ -6,12 +6,13 @@ import {
   EntityUpdateData,
 } from "../../base/entity";
 import { RequiredJSONSchema } from "../../base/json-schema";
+import { Voter } from "../../user/entity/voter";
 
 export interface PollOptionVoteData extends EntityData {
   pollId: EntityId;
   pollOptionId: EntityId;
-  userId: EntityId;
   ip: string;
+  voterId: EntityId;
 }
 
 export type PollOptionVoteCreateData = EntityCreateData<PollOptionVoteData>;
@@ -29,12 +30,12 @@ export class PollOptionVote
     return this.get("pollOptionId");
   }
 
-  get userId() {
-    return this.get("userId");
-  }
-
   get ip() {
     return this.get("ip");
+  }
+
+  get voterId() {
+    return this.get("voterId");
   }
 
   static override jsonSchema: RequiredJSONSchema = {
@@ -43,14 +44,14 @@ export class PollOptionVote
       ...BaseEntity.jsonSchema.properties,
       pollId: BaseEntity.jsonSchema.properties.id,
       pollOptionId: BaseEntity.jsonSchema.properties.id,
-      userId: BaseEntity.jsonSchema.properties.id,
       ip: { type: "string" },
+      voterId: Voter.jsonSchema.properties.id,
     },
     required: BaseEntity.jsonSchema.required.concat([
       "pollId",
       "pollOptionId",
-      "userId",
       "ip",
+      "voterId",
     ]),
   };
 }

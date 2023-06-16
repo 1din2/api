@@ -5,7 +5,7 @@ import { PollOptionVoteData } from "../../../domain/poll/entity/poll-option-vote
 @ObjectType("PollVote")
 export class TypePollVote
   extends TypeBaseEntity
-  implements Omit<PollOptionVoteData, "userId" | "ip">
+  implements Omit<PollOptionVoteData, "voterId" | "ip">
 {
   @Field(() => ID)
   pollId!: string;

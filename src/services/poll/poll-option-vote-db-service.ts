@@ -24,14 +24,14 @@ export class PollOptionVoteDbService
     offset,
     pollId,
     pollOptionId,
-    userId,
+    voterId,
   }: FindVoteParams): Promise<PollOptionVote[]> {
     const query = this.query()
       .limit(limit || 10)
       .offset(offset || 0);
     if (pollId) query.where({ pollId });
     if (pollOptionId) query.where({ pollOptionId });
-    if (userId) query.where({ userId });
+    if (voterId) query.where({ voterId });
 
     const items = await query.orderBy("id", "desc");
 
@@ -46,18 +46,18 @@ export class PollOptionVoteDbService
     pollId,
     pollOptionId,
   }: CountPollOptionVoteParams): Promise<number> {
-    const query = this.query().countDistinct("userId", { as: "total" });
+    const query = this.query().countDistinct("voterId", { as: "total" });
     if (pollId) query.where({ pollId });
     if (pollOptionId) query.where({ pollOptionId });
     const item = await query.first();
     return item ? parseInt(item.total.toString(), 10) : 0;
   }
 
-  async findByUserOption({
-    userId,
+  async findByVoterOption({
+    voterId,
     pollOptionId,
   }: FindVoteByUserOptionParams): Promise<PollOptionVote | null> {
-    const item = await this.query().where({ userId, pollOptionId }).first();
+    const item = await this.query().where({ voterId, pollOptionId }).first();
 
     return item ? this.toEntity(item) : null;
   }
@@ -65,7 +65,7 @@ export class PollOptionVoteDbService
   public override async findUnique(
     data: PollOptionVoteCreateData
   ): Promise<PollOptionVote | null> {
-    const item = await this.findByUserOption(data);
+    const item = await this.findByVoterOption(data);
     if (item) return item;
 
     return super.findUnique(data);
